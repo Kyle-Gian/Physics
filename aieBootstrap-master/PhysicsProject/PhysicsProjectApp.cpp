@@ -6,6 +6,7 @@
 #include <Gizmos.h>
 
 #include "Sphere.h"
+#include "Plane.h"
 
 PhysicsProjectApp::PhysicsProjectApp() {
 
@@ -36,9 +37,24 @@ bool PhysicsProjectApp::startup() {
 
 	m_physicsScene->SetTimeStep(0.01f);
 
-	Sphere* ball;
-	ball = new Sphere(glm::vec2(-40, 0), glm::vec2(10, 30), 3.f, 1, glm::vec4(1, 0, 0, 1));
-	m_physicsScene->AddActor(ball);
+	Sphere* ball1;
+	Sphere* ball2;
+
+	ball1 = new Sphere(glm::vec2(-10, 15), glm::vec2(0, 0), 3.f, 5, glm::vec4(1, 0, 0, 1));
+
+	ball2 = new Sphere(glm::vec2(40, 20), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+
+	m_physicsScene->AddActor(ball1);
+	m_physicsScene->AddActor(ball2);
+
+	ball1->ApplyForce(glm::vec2(60, 0));
+	ball2->ApplyForce(glm::vec2(-60,0));
+
+	Plane* plane = new Plane();
+
+	m_physicsScene->AddActor(plane);
+
+
 
 	return true;
 }

@@ -7,7 +7,8 @@
 enum ShapeType {
 	PLANE = 0,
 	SPHERE,
-	BOX
+	//BOX,
+	SHAPE_COUNT
 };
 
 class PhysicsObject
@@ -17,6 +18,8 @@ public:
 	virtual void Debug() = 0;
 	virtual void MakeGizmo() = 0;
 	virtual void ResetPosition() {};
+
+	ShapeType GetShapeID() { return m_shapeID; }
 
 protected:
 

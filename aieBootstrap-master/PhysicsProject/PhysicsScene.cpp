@@ -4,6 +4,18 @@
 #include <list>
 #include <iostream>
 
+#include "Sphere.h"
+#include "Plane.h"
+
+// Function pointer array for handling our collisions
+typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
+
+static fn collisionFunctionArray[] =
+{
+	PhysicsScene::Plane2Plane, PhysicsScene::Plane2Sphere,
+	PhysicsScene::Sphere2Plane, PhysicsScene::Sphere2Sphere
+};
+
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0,0))
 {
 }
@@ -33,7 +45,6 @@ void PhysicsScene::RemoveActor(PhysicsObject* a_actor)
 
 void PhysicsScene::Update(float dt)
 {
-	static std::list<PhysicsObject*> dirty; // Must Remove
 	static float accumulatedTime = 0.f;
 	accumulatedTime += dt;
 
@@ -44,29 +55,9 @@ void PhysicsScene::Update(float dt)
 			pActor->FixedUpdate(m_gravity, m_timeStep);
 		}
 		accumulatedTime -= m_timeStep;
-		for (auto pActor : m_actors)
-		{
-			for ( auto pOther : m_actors)
-			{
-				if (pActor == pOther)
-				{
-					continue;
-				}
-				if (std::find(dirty.begin(), dirty.end(), pActor) != dirty.end() && 
-					std::find(dirty.begin(), dirty.end(), pOther) != dirty.end())
-				{
-					continue;
-				}
-				RigidBody* pRigid = dynamic_cast<RigidBody*>(pActor);
-				if (pRigid->CheckCollision(pOther) == true)
-				{
-					pRigid->ApplyforceToOther(dynamic_cast<RigidBody*>(pOther), pRigid->GetVelocity()* pRigid->GetMass());
-					dirty.push_back(pRigid);
-					dirty.push_back(pOther);
-				}
-			}
-		}
-		dirty.clear();
+		
+
+		CheckForCollision();
 	}
 }
 
@@ -88,4 +79,88 @@ void PhysicsScene::DebugScene()
 		pActor->Debug();
 		count++;
 	}
+}
+
+void PhysicsScene::CheckForCollision()
+{
+	int actorCount = m_actors.size();
+
+	for (int outer = 0; outer < actorCount - 1; outer++)
+	{
+		for (int inner = outer + 1; inner < actorCount; inner++)
+		{
+			PhysicsObject* objOuter = m_actors[outer];
+			PhysicsObject* objInner = m_actors[inner];
+			int shapeID_out = objOuter->GetShapeID();
+			int shapeID_in = objInner->GetShapeID();
+
+			int functionIndex = (shapeID_out * SHAPE_COUNT) + shapeID_in;
+			fn collisionFunctionPtr = collisionFunctionArray[functionIndex];
+
+			if (collisionFunctionPtr != nullptr)
+			{
+				collisionFunctionPtr(objOuter, objInner);
+			}
+
+		}
+	}
+}
+
+bool PhysicsScene::Plane2Plane(PhysicsObject*, PhysicsObject*)
+{
+	return false;
+}
+
+bool PhysicsScene::Plane2Sphere(PhysicsObject* objPlane, PhysicsObject*objSphere)
+{
+	return Sphere2Plane(objSphere, objPlane);
+}
+
+bool PhysicsScene::Sphere2Plane(PhysicsObject* objSphere, PhysicsObject* objPlane)
+{
+
+	Sphere* sphere = dynamic_cast<Sphere*>(objSphere);
+	Plane* plane = dynamic_cast<Plane*>(objPlane);
+
+	//If these have a value continue below
+
+	if (sphere != nullptr && plane != nullptr)
+	{
+		glm::vec2 collisionNormal = plane->GetNormal();
+		float sphereToPlane = glm::dot(sphere->GetPosition(), collisionNormal - plane->GetDistance());
+		float intersection = sphere->GetRadius() - sphereToPlane;
+		float velocityOutOfPlane = glm::dot(sphere->GetVelocity(), collisionNormal);
+
+		if (intersection > 0 && velocityOutOfPlane < 0 )
+		{
+			sphere->ApplyForce(-sphere->GetVelocity() * sphere->GetMass());
+			return true;
+		}
+	}
+	return false;
+}
+
+bool PhysicsScene::Sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
+{
+	Sphere* sphere1 = dynamic_cast<Sphere*>(obj1);
+	Sphere* sphere2 = dynamic_cast<Sphere*>(obj2);
+
+	if (sphere1 != nullptr && sphere2 != nullptr)
+	{
+		float dist = glm::distance(sphere1->GetPosition(), sphere2->GetPosition());
+
+		float penetration = sphere1->GetRadius() + sphere2->GetRadius() - dist;
+
+
+		if (penetration > 0)
+		{
+			sphere1->ResolveCollision(sphere2);
+			return true;
+		}
+
+	}
+
+
+
+	return false;
 }
