@@ -13,7 +13,6 @@ public:
 
 	void ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact, glm::vec2* a_collisionNormal = nullptr);
 
-	virtual bool CheckCollision(PhysicsObject* pOther) = 0;
 
 
 
@@ -25,9 +24,12 @@ public:
 	float GetMoment() { return m_moment; }
 	float GetAngularVelocity() { return m_angularVelocity; }
 
+	float SetRotation(float a_rotate) { return m_rotation = a_rotate; }
+
 
 
 protected:
+
 	glm::vec2 m_position;
 	glm::vec2 m_velocity;
 

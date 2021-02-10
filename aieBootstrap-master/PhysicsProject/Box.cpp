@@ -4,8 +4,8 @@
 Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_mass, float a_width, float a_height)
 	: RigidBody(BOX, a_position, a_velocity, a_rotation, a_mass), m_extents(a_width, a_height)
 {
-
 	m_color = glm::vec4(1, 0, 0, 1);
+	m_moment = 1.f / 3.f * m_mass * a_width * a_height;
 
 }
 
@@ -13,7 +13,7 @@ Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_m
 	: RigidBody(BOX, a_position, a_velocity, a_rotation, a_mass), m_extents(a_width, a_height)
 {
 	m_color = a_color;
-
+	m_moment = 1.f / 3.f * m_mass * a_width * a_height;
 }
 
 Box::~Box()
@@ -34,17 +34,15 @@ void Box::FixedUpdate(glm::vec2 a_gravity, float a_timestep)
 
 void Box::MakeGizmo()
 {
+	//Points used to create a box
 	glm::vec2 p1 = m_position - m_localX * m_extents.x - m_localY * m_extents.y;
 	glm::vec2 p2 = m_position + m_localX * m_extents.x - m_localY * m_extents.y;
 	glm::vec2 p3 = m_position - m_localX * m_extents.x + m_localY * m_extents.y;
 	glm::vec2 p4 = m_position + m_localX * m_extents.x + m_localY * m_extents.y;
 
-
+	//Uses the points to create the box
 	aie::Gizmos::add2DTri(p1,p2,p4, m_color);
 	aie::Gizmos::add2DTri(p1, p4, p3, m_color);
-
-
-
 }
 
 bool Box::CheckBoxCorners(const Box& a_box, glm::vec2& a_contact, int& a_numContacts, float& a_pen, glm::vec2& a_edgeNormal)
@@ -66,9 +64,7 @@ bool Box::CheckBoxCorners(const Box& a_box, glm::vec2& a_contact, int& a_numCont
 			glm::vec2 p = a_box.GetPosition() + x * a_box.m_localX + y * a_box.m_localY;
 
 			// Get the position in our box's space
-			glm::vec2 p0 (glm::dot(p - m_position, m_localX), glm::dot(p - m_position, m_localY));
-
-
+			glm::vec2 p0(glm::dot(p - m_position, m_localX), glm::dot(p - m_position, m_localY));
 
 			//Update the extents in each cardinal direction of our box's space
 			// ~ Extents along the seperating axes
@@ -99,8 +95,7 @@ bool Box::CheckBoxCorners(const Box& a_box, glm::vec2& a_contact, int& a_numCont
 				localContacts += p0;
 			}
 
-			return false;
-
+			first = false;
 		}
 	}
 	//if we lie entirely to one side of the box along one axis, we've found a seperating

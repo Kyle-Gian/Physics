@@ -30,11 +30,9 @@ void RigidBody::ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact, g
 	glm::vec2 normal = glm::normalize(a_collisionNormal ? *a_collisionNormal : a_otherActor->GetPosition() - GetPosition());
 	
 	//Get the vector perpendicular to the collision normal
-
 	glm::vec2 perpendicularColNorm(normal.y, -normal.x);
 
 	//These are applied to the radius from axis to the application of force
-
 	float radius1 = glm::dot(a_contact - m_position, -perpendicularColNorm);
 	float radius2 = glm::dot(a_contact -a_otherActor->GetPosition(), perpendicularColNorm);
 
@@ -42,7 +40,7 @@ void RigidBody::ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact, g
 	float cp_velocity1 = glm::dot(m_velocity, normal) - radius1 * m_angularVelocity;
 
 	//Velocity of contact point of the other object
-	float cp_velocity2 = glm::dot(a_otherActor->GetPosition(), normal) + radius2 * a_otherActor->m_angularVelocity;
+	float cp_velocity2 = glm::dot(a_otherActor->m_velocity, normal) + radius2 * a_otherActor->m_angularVelocity;
 
 	if (cp_velocity1 > cp_velocity2) // They are moving closer
 	{
@@ -58,8 +56,4 @@ void RigidBody::ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact, g
 		ApplyForce(-impact, a_contact - m_position);
 		a_otherActor->ApplyForce(impact, a_contact - a_otherActor->GetPosition());
 	}
-
-
-
-
 }
