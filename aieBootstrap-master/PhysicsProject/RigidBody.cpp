@@ -1,6 +1,10 @@
 #include "RigidBody.h"
+#include "PhysicsScene.h"
 
-RigidBody::RigidBody(ShapeType a_shapeID, glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_mass ) : PhysicsObject(a_shapeID)
+#define MIN_LINEAR_THRESHOLD 0.001f;
+#define MIN_ANGULAR_THRESHOLD 0.001f;
+
+RigidBody::RigidBody(ShapeType a_shapeID, glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_mass) : PhysicsObject(a_shapeID)
 {
 	m_position = a_position;
 	m_velocity = a_velocity;
@@ -8,10 +12,25 @@ RigidBody::RigidBody(ShapeType a_shapeID, glm::vec2 a_position, glm::vec2 a_velo
 	m_rotation = a_rotation;
 	m_angularVelocity = 0;
 	m_elasticity = 0.8f;
+	m_linearDrag = 0.3f;
+	m_angularDrag = 0.3f;
 }
 
 void RigidBody::FixedUpdate(glm::vec2 a_gravity, float a_timeStep)
 {
+	//Slow object down over Time
+	m_velocity -= m_velocity * m_linearDrag * a_timeStep;
+	m_angularVelocity -= m_angularVelocity * m_angularDrag * a_timeStep;
+
+	if (glm::length(m_velocity) < 0.001f)
+	{
+		m_velocity = glm::vec2(0);
+	}
+	if (abs(m_angularVelocity) < 0.001f)
+	{
+		m_angularVelocity = 0;
+	}
+
 	ApplyForce(a_gravity * GetMass() * a_timeStep, glm::vec2(0));
 	m_position += GetVelocity() * a_timeStep;
 
@@ -24,18 +43,18 @@ void RigidBody::ApplyForce(glm::vec2 a_force, glm::vec2 a_pos)
 	m_angularVelocity += (a_force.y * a_pos.x - a_force.x * a_pos.y) / GetMoment();
 }
 
-void RigidBody::ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact, glm::vec2* a_collisionNormal)
+void RigidBody::ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact, glm::vec2* a_collisionNormal, float a_pen)
 {
 	// Find the vector between their centers, or use the provided 
 	// direction of force, and make sure it's normalised
 	glm::vec2 normal = glm::normalize(a_collisionNormal ? *a_collisionNormal : a_otherActor->GetPosition() - GetPosition());
-	
+
 	//Get the vector perpendicular to the collision normal
 	glm::vec2 perpendicularColNorm(normal.y, -normal.x);
 
 	//These are applied to the radius from axis to the application of force
 	float radius1 = glm::dot(a_contact - m_position, -perpendicularColNorm);
-	float radius2 = glm::dot(a_contact -a_otherActor->GetPosition(), perpendicularColNorm);
+	float radius2 = glm::dot(a_contact - a_otherActor->GetPosition(), perpendicularColNorm);
 
 	// Velocity of the contact point on this object
 	float cp_velocity1 = glm::dot(m_velocity, normal) - radius1 * m_angularVelocity;
@@ -56,5 +75,10 @@ void RigidBody::ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact, g
 
 		ApplyForce(-impact, a_contact - m_position);
 		a_otherActor->ApplyForce(impact, a_contact - a_otherActor->GetPosition());
+
+		if (a_pen > 0)
+		{
+			PhysicsScene::ApplyContactForces(this, a_otherActor, normal, a_pen);
+		}
 	}
 }

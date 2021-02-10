@@ -1,4 +1,5 @@
 #include "Plane.h"
+#include "PhysicsScene.h"
 #include <Gizmos.h>
 #include "RigidBody.h"
 
@@ -66,4 +67,7 @@ void Plane::ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact)
 	float j = -(1 + e) * velocityIntoPlane * mass0;
 	glm::vec2 force = m_normal * j;
 	a_otherActor->ApplyForce(force, a_contact - a_otherActor->GetPosition());
+
+	float pen = glm::dot(a_contact, m_normal) - m_distanceToOrigin;
+	PhysicsScene::ApplyContactForces(a_otherActor, nullptr, m_normal, pen);
 }

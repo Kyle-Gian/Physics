@@ -11,7 +11,7 @@ public:
 	virtual void Debug() {};
 	void ApplyForce(glm::vec2 a_force, glm::vec2 a_pos);
 
-	void ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact, glm::vec2* a_collisionNormal = nullptr);
+	void ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact, glm::vec2* a_collisionNormal = nullptr, float a_pen = 0);
 
 
 
@@ -24,7 +24,13 @@ public:
 	float GetMoment() { return m_moment; }
 	float GetAngularVelocity() { return m_angularVelocity; }
 
+	glm::vec2 SetPosition(glm::vec2 a_newPos) { return m_position = a_newPos; }
 	float SetRotation(float a_rotate) { return m_rotation = a_rotate; }
+
+	float GetLinearDrag() { return m_linearDrag; }
+	float GetAngularDrag() { return m_angularDrag; }
+
+
 
 
 
@@ -37,5 +43,8 @@ protected:
 	float m_rotation;
 	float m_angularVelocity;
 	float m_moment;
+
+	float m_linearDrag;
+	float m_angularDrag;
 };
 
