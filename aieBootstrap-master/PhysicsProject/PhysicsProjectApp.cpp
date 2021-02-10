@@ -18,11 +18,9 @@ PhysicsProjectApp::~PhysicsProjectApp() {
 
 bool PhysicsProjectApp::startup() {
 	//increases the 2D line count to maximise the number of objects we can draw
-
 	aie::Gizmos::create(225U, 255U, 65535U, 65535U);
 
 	m_2dRenderer = new aie::Renderer2D();
-
 	// TODO: remember to change this when redistributing a build!
 	// the following path would be used instead: "./font/consolas.ttf"
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
@@ -34,27 +32,24 @@ bool PhysicsProjectApp::startup() {
 	//lower the value, the more accurate the simulation will be;
 	// but it will increase the processing time required. If it 
 	// is too high it cause the sim to stutter and reduce stability
-
 	m_physicsScene->SetTimeStep(0.01f);
 
+	//Create objects here
 	Sphere* ball1;
 	Sphere* ball2;
 
-	ball1 = new Sphere(glm::vec2(-10, 15), glm::vec2(0, 0), 3.f, 5, glm::vec4(1, 0, 0, 1));
-
-	ball2 = new Sphere(glm::vec2(40, 20), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
-
-	m_physicsScene->AddActor(ball1);
-	m_physicsScene->AddActor(ball2);
-
-	ball1->ApplyForce(glm::vec2(60, 0));
-	ball2->ApplyForce(glm::vec2(-60,0));
-
+	ball1 = new Sphere(glm::vec2(-30, 10), glm::vec2(0, 0), 3.f, 5, glm::vec4(1, 0, 0, 1));
+	ball2 = new Sphere(glm::vec2(30, 10), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
 	Plane* plane = new Plane();
 
+	//Add actors to the scene here
+	m_physicsScene->AddActor(ball1);
+	m_physicsScene->AddActor(ball2);
 	m_physicsScene->AddActor(plane);
 
-
+	//Apply force to objects here
+	ball1->ApplyForce(glm::vec2(30, 0), glm::vec2(0));
+	ball2->ApplyForce(glm::vec2(-60,0), glm::vec2(0));
 
 	return true;
 }
@@ -81,7 +76,6 @@ void PhysicsProjectApp::update(float deltaTime) {
 }
 
 void PhysicsProjectApp::draw() {
-
 	// wipe the screen to the background colour
 	clearScreen();
 

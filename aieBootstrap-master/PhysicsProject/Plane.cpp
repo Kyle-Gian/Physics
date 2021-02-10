@@ -1,16 +1,17 @@
 #include "Plane.h"
 #include <Gizmos.h>
+#include "RigidBody.h"
 
 Plane::Plane(glm::vec2 a_normal, float a_distance) : PhysicsObject(PLANE)
 {
-	m_normal = a_normal;
+	m_normal = glm::normalize(a_normal);
 	m_distanceToOrigin = a_distance;
 	m_color = glm::vec4(0, 1, 0, 1);
 }
 
 Plane::Plane() : PhysicsObject(PLANE)
 {
-	m_normal = glm::vec2(0, 1);
+	m_normal = glm::normalize(glm::vec2(0, 1));
 	m_distanceToOrigin = 0;
 	m_color = glm::vec4(1, 1, 1, 1);
 }
@@ -37,4 +38,31 @@ void Plane::MakeGizmo()
 
 	aie::Gizmos::add2DTri(start, end, start - GetNormal() * 10.f, GetColor(), GetColor(), colorFade);
 	aie::Gizmos::add2DTri(end, end - GetNormal() * 10.f, start - GetNormal() * 10.f, GetColor(), colorFade, colorFade);
+}
+
+void Plane::ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact)
+{
+	//The position at which we'll apply the force, relative to the other objects Center of Mass
+	glm::vec2 localContact = a_contact - a_otherActor->GetPosition();
+
+	//The plane never moves, so the relative velocity is just the a_otherActor's velocity at the contact point
+
+	glm::vec2 vRel = a_otherActor->GetVelocity() + a_otherActor->GetAngularVelocity() * glm::vec2(-localContact.y, localContact.x);
+	float velocityIntoPlane = glm::dot(vRel, m_normal);
+
+	//This can be left as perfect elasticity for the moment
+	float e = 1.f;
+
+	//This is the perpendicular distance we apply the force at relative
+	//to the center of mass: Torque = F * r
+	float r = glm::dot(localContact, glm::vec2(m_normal.y, -m_normal.x));
+
+	//This will work out the 'effective mass' - a combination of the moment of inertia
+	// and mass, it will tell how much the contact point velocity will change the force we apply
+	float mass0 = 1.f / (1.f / a_otherActor->GetMass() + (r * r) / a_otherActor->GetMoment());
+
+	// The plane does not move (static) so we only use the other actor's velocity
+	float j = -(1 + e) * velocityIntoPlane * mass0;
+	glm::vec2 force = m_normal * j;
+	a_otherActor->ApplyForce(force, a_contact - a_otherActor->GetPosition());
 }

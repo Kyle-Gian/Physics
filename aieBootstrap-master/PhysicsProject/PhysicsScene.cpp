@@ -6,14 +6,16 @@
 
 #include "Sphere.h"
 #include "Plane.h"
+#include "Box.h"
 
 // Function pointer array for handling our collisions
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] =
 {
-	PhysicsScene::Plane2Plane, PhysicsScene::Plane2Sphere,
-	PhysicsScene::Sphere2Plane, PhysicsScene::Sphere2Sphere
+	PhysicsScene::Plane2Plane, PhysicsScene::Plane2Sphere,PhysicsScene::Plane2Box,
+	PhysicsScene::Sphere2Plane,PhysicsScene::Sphere2Sphere,PhysicsScene::Sphere2Box,
+	PhysicsScene::Box2Plane,PhysicsScene::Box2Sphere,PhysicsScene::Box2Box,
 };
 
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0,0))
@@ -116,6 +118,11 @@ bool PhysicsScene::Plane2Sphere(PhysicsObject* objPlane, PhysicsObject*objSphere
 	return Sphere2Plane(objSphere, objPlane);
 }
 
+bool PhysicsScene::Plane2Box(PhysicsObject*, PhysicsObject*)
+{
+	return false;
+}
+
 bool PhysicsScene::Sphere2Plane(PhysicsObject* objSphere, PhysicsObject* objPlane)
 {
 
@@ -133,7 +140,8 @@ bool PhysicsScene::Sphere2Plane(PhysicsObject* objSphere, PhysicsObject* objPlan
 
 		if (intersection > 0 && velocityOutOfPlane < 0 )
 		{
-			sphere->ApplyForce(-sphere->GetVelocity() * sphere->GetMass());
+			glm::vec2 contact = sphere->GetPosition() + (collisionNormal * -sphere->GetRadius());
+			plane->ResolveCollision(sphere, contact);
 			return true;
 		}
 	}
@@ -154,7 +162,7 @@ bool PhysicsScene::Sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 
 		if (penetration > 0)
 		{
-			sphere1->ResolveCollision(sphere2);
+			sphere1->ResolveCollision(sphere2, 0.5f * (sphere1->GetPosition() + sphere2->GetPosition()));
 			return true;
 		}
 
@@ -162,5 +170,25 @@ bool PhysicsScene::Sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 
 
 
+	return false;
+}
+
+bool PhysicsScene::Sphere2Box(PhysicsObject*, PhysicsObject*)
+{
+	return false;
+}
+
+bool PhysicsScene::Box2Box(PhysicsObject*, PhysicsObject*)
+{
+	return false;
+}
+
+bool PhysicsScene::Box2Plane(PhysicsObject*, PhysicsObject*)
+{
+	return false;
+}
+
+bool PhysicsScene::Box2Sphere(PhysicsObject*, PhysicsObject*)
+{
 	return false;
 }
