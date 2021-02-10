@@ -101,7 +101,7 @@ void PhysicsProjectApp::DrawRect()
 	Sphere* ball = new Sphere(glm::vec2(5, -10), glm::vec2(0, 0), 1, 3, glm::vec4(0, 0, 1, 1));
 	ball->SetRotation(0.5);
 	m_physicsScene->AddActor(ball);
-
+	ball->SetKinematic(true);
 
 }
 

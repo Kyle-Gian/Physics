@@ -7,6 +7,7 @@ RigidBody::RigidBody(ShapeType a_shapeID, glm::vec2 a_position, glm::vec2 a_velo
 	m_mass = a_mass;
 	m_rotation = a_rotation;
 	m_angularVelocity = 0;
+	m_elasticity = 0.8f;
 }
 
 void RigidBody::FixedUpdate(glm::vec2 a_gravity, float a_timeStep)
