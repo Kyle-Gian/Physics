@@ -5,6 +5,7 @@
 //This is a pure abstract class. It will be used as a
 // base for the derived classes that will use FixedUpdate
 enum ShapeType {
+	JOINT = -1,
 	PLANE = 0,
 	SPHERE,
 	BOX,
@@ -18,6 +19,8 @@ public:
 	virtual void Debug() = 0;
 	virtual void MakeGizmo() = 0;
 	virtual void ResetPosition() {};
+
+	virtual bool IsInside(glm::vec2 a_point) = 0;
 
 	ShapeType GetShapeID() { return m_shapeID; }
 

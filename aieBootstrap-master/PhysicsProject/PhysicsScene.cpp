@@ -18,7 +18,7 @@ static fn collisionFunctionArray[] =
 	PhysicsScene::Box2Plane,PhysicsScene::Box2Sphere,PhysicsScene::Box2Box,
 };
 
-PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0,0))
+PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
 {
 }
 
@@ -57,7 +57,7 @@ void PhysicsScene::Update(float dt)
 			pActor->FixedUpdate(m_gravity, m_timeStep);
 		}
 		accumulatedTime -= m_timeStep;
-		
+
 		CheckForCollision();
 	}
 }
@@ -95,12 +95,18 @@ void PhysicsScene::CheckForCollision()
 			int shapeID_out = objOuter->GetShapeID();
 			int shapeID_in = objInner->GetShapeID();
 
-			int functionIndex = (shapeID_out * SHAPE_COUNT) + shapeID_in;
-			fn collisionFunctionPtr = collisionFunctionArray[functionIndex];
-
-			if (collisionFunctionPtr != nullptr)
+			//This will check to ensure we do not include the joints
+			if (shapeID_in >= 0 && shapeID_out >= 0)
 			{
-				collisionFunctionPtr(objOuter, objInner);
+				//Uses our function pointers (fn)
+				int functionIndex = (shapeID_out * SHAPE_COUNT) + shapeID_in;
+				fn collisionFunctionPtr = collisionFunctionArray[functionIndex];
+
+				if (collisionFunctionPtr != nullptr)
+				{
+					//Check if the collision occurs
+					collisionFunctionPtr(objOuter, objInner);
+				}
 			}
 
 		}
@@ -109,6 +115,10 @@ void PhysicsScene::CheckForCollision()
 
 void PhysicsScene::ApplyContactForces(RigidBody* a_actor1, RigidBody* a_actor2, glm::vec2 a_collisionNorm, float a_pen)
 {
+	if ((a_actor1 && a_actor1->IsTrigger()) || (a_actor2 && a_actor2->IsTrigger()))
+	{
+		return;
+	}
 	float body2Mass = a_actor2 ? a_actor2->GetMass() : INT_MAX;
 	float body1Factor = body2Mass / (a_actor1->GetMass() + body2Mass);
 
@@ -126,7 +136,7 @@ bool PhysicsScene::Plane2Plane(PhysicsObject*, PhysicsObject*)
 	return false;
 }
 
-bool PhysicsScene::Plane2Sphere(PhysicsObject* objPlane, PhysicsObject*objSphere)
+bool PhysicsScene::Plane2Sphere(PhysicsObject* objPlane, PhysicsObject* objSphere)
 {
 	return Sphere2Plane(objSphere, objPlane);
 }
@@ -147,7 +157,7 @@ bool PhysicsScene::Plane2Box(PhysicsObject* objPlane, PhysicsObject* objBox)
 		glm::vec2 planeOrigin = plane->GetNormal() * plane->GetDistance();
 
 		//check all the corners for a collision with the plane
-		for (float x = -box->GetExtents().x; x < box->GetWidth(); x+= box->GetWidth())
+		for (float x = -box->GetExtents().x; x < box->GetWidth(); x += box->GetWidth())
 		{
 			for (float y = -box->GetExtents().y; y < box->GetHeight(); y += box->GetHeight())
 			{
@@ -172,7 +182,7 @@ bool PhysicsScene::Plane2Box(PhysicsObject* objPlane, PhysicsObject* objBox)
 
 			}
 		}
-		if (numContacts> 0)
+		if (numContacts > 0)
 		{
 			plane->ResolveCollision(box, contact / (float)numContacts);
 			return true;
@@ -198,7 +208,7 @@ bool PhysicsScene::Sphere2Plane(PhysicsObject* objSphere, PhysicsObject* objPlan
 		float intersection = sphere->GetRadius() - sphereToPlane;
 		float velocityOutOfPlane = glm::dot(sphere->GetVelocity(), collisionNormal);
 
-		if (intersection > 0 && velocityOutOfPlane < 0 )
+		if (intersection > 0 && velocityOutOfPlane < 0)
 		{
 			glm::vec2 contact = sphere->GetPosition() + (collisionNormal * -sphere->GetRadius());
 			plane->ResolveCollision(sphere, contact);
@@ -222,7 +232,7 @@ bool PhysicsScene::Sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 
 		if (penetration > 0)
 		{
-			sphere1->ResolveCollision(sphere2, 0.5f * (sphere1->GetPosition() + sphere2->GetPosition()),nullptr, penetration);
+			sphere1->ResolveCollision(sphere2, 0.5f * (sphere1->GetPosition() + sphere2->GetPosition()), nullptr, penetration);
 			return true;
 		}
 
@@ -234,7 +244,7 @@ bool PhysicsScene::Sphere2Box(PhysicsObject* objSphere, PhysicsObject* objBox)
 {
 	Sphere* sphere = dynamic_cast<Sphere*>(objSphere);
 	Box* box = dynamic_cast<Box*>(objBox);
-	
+
 	if (box != nullptr && sphere != nullptr)
 	{
 		//Transform the circle into the box's coordinate space
@@ -291,14 +301,14 @@ bool PhysicsScene::Box2Box(PhysicsObject* obj1, PhysicsObject* obj2)
 		glm::vec2 contact(0, 0);
 		float pen = 0;
 		int numContacts = 0;
-		box1->CheckBoxCorners(*box2, contact , numContacts,pen, norm );
+		box1->CheckBoxCorners(*box2, contact, numContacts, pen, norm);
 
-		if (box2->CheckBoxCorners(*box1, contact, numContacts,pen, norm))
+		if (box2->CheckBoxCorners(*box1, contact, numContacts, pen, norm))
 		{
 			norm = -norm;
 		}
 
-		if (pen>0)
+		if (pen > 0)
 		{
 			box1->ResolveCollision(box2, contact / float(numContacts), &norm, pen);
 		}
@@ -308,12 +318,12 @@ bool PhysicsScene::Box2Box(PhysicsObject* obj1, PhysicsObject* obj2)
 	return false;
 }
 
-bool PhysicsScene::Box2Plane(PhysicsObject* objBox, PhysicsObject*objPlane)
+bool PhysicsScene::Box2Plane(PhysicsObject* objBox, PhysicsObject* objPlane)
 {
-	return Plane2Box(objPlane,objBox);
+	return Plane2Box(objPlane, objBox);
 }
 
-bool PhysicsScene::Box2Sphere(PhysicsObject*objBox, PhysicsObject* objSphere)
+bool PhysicsScene::Box2Sphere(PhysicsObject* objBox, PhysicsObject* objSphere)
 {
 	return Sphere2Box(objSphere, objBox);
 }

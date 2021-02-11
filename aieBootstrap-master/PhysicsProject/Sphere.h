@@ -8,7 +8,7 @@ public:
 	~Sphere() {};
 
 	virtual void MakeGizmo();
-	bool CheckCollision(PhysicsObject* pOther);
+	virtual bool IsInside(glm::vec2 a_point);
 
 	float GetRadius() { return m_radius; }
 
