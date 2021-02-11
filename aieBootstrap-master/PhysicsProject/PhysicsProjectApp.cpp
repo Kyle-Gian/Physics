@@ -195,11 +195,11 @@ void PhysicsProjectApp::DrawPool()
 	Sphere* topLeftPocket = new Sphere(glm::vec2(-95, 52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
 	Sphere* botLeftPocket = new Sphere(glm::vec2(-95, -52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
 
-	Sphere* topMidPocket = new Sphere(glm::vec2(-30, 10), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
-	Sphere* botMidPocket = new Sphere(glm::vec2(-30, 10), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+	Sphere* topMidPocket = new Sphere(glm::vec2(0, 56), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+	Sphere* botMidPocket = new Sphere(glm::vec2(0, -56), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
 
 	Sphere* topRightPocket = new Sphere(glm::vec2(95, 52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
-	Sphere* botRightPocket = new Sphere(glm::vec2(-30, 10), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+	Sphere* botRightPocket = new Sphere(glm::vec2(95, -52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
 
 
 	//Add actor to scene
@@ -232,6 +232,45 @@ void PhysicsProjectApp::DrawPool()
 
 	topRightPocket->SetTrigger(true);
 	botRightPocket->SetTrigger(true);
+
+
+	//Draw Pool Balls
+	Sphere* cueBall = new Sphere(glm::vec2(-60, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(1, 1, 1, 1));
+	Sphere* ball1 = new Sphere(glm::vec2(20, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball2 = new Sphere(glm::vec2(28, -5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball3 = new Sphere(glm::vec2(28, 5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball4 = new Sphere(glm::vec2(36, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball5 = new Sphere(glm::vec2(36, -10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball6 = new Sphere(glm::vec2(36, 10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball7 = new Sphere(glm::vec2(44, -5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball8 = new Sphere(glm::vec2(44, 5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball9 = new Sphere(glm::vec2(44, -15), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball10 = new Sphere(glm::vec2(44, 15), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball11 = new Sphere(glm::vec2(52, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball12 = new Sphere(glm::vec2(52, -10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball13 = new Sphere(glm::vec2(52, 10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball14 = new Sphere(glm::vec2(52, -20), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	Sphere* ball15 = new Sphere(glm::vec2(52, 20), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+
+	m_physicsScene->AddActor(cueBall);
+	m_physicsScene->AddActor(ball1);
+	m_physicsScene->AddActor(ball2);
+	m_physicsScene->AddActor(ball3);
+	m_physicsScene->AddActor(ball4);
+	m_physicsScene->AddActor(ball5);
+	m_physicsScene->AddActor(ball6);
+	m_physicsScene->AddActor(ball7);
+	m_physicsScene->AddActor(ball8);
+	m_physicsScene->AddActor(ball9);
+	m_physicsScene->AddActor(ball10);
+	m_physicsScene->AddActor(ball11);
+	m_physicsScene->AddActor(ball12);
+	m_physicsScene->AddActor(ball13);
+	m_physicsScene->AddActor(ball14);
+	m_physicsScene->AddActor(ball15);
+
+	cueBall->ApplyForce(glm::vec2(200, 0), cueBall->GetPosition());
+
 
 }
 
