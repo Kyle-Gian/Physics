@@ -30,20 +30,15 @@ bool PhysicsProjectApp::startup() {
 	m_physicsScene = new PhysicsScene();
 
 	m_physicsScene->SetGravity(glm::vec2(0, 0));
+	
 
 	//lower the value, the more accurate the simulation will be;
 	// but it will increase the processing time required. If it 
 	// is too high it cause the sim to stutter and reduce stability
 	m_physicsScene->SetTimeStep(0.01f);
 
-	//DrawRect();
-
 	DrawPool();
 
-	//SpringTest(10);
-	//TriggerTest();
-
-	//SphereAndPlane();
 	return true;
 }
 
@@ -63,13 +58,9 @@ void PhysicsProjectApp::update(float deltaTime) {
 	m_physicsScene->Update(deltaTime);
 	m_physicsScene->Draw();
 
-	if (input->isMouseButtonDown(0))
-	{
-		int xScreen, yScreen;
-		input->getMouseXY(&xScreen, &yScreen);
-		glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
-		aie::Gizmos::add2DCircle(worldPos, 5, 32, glm::vec4(0.3));
-	}
+
+	AimAndShoot(input);
+
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -235,42 +226,39 @@ void PhysicsProjectApp::DrawPool()
 
 
 	//Draw Pool Balls
-	Sphere* cueBall = new Sphere(glm::vec2(-60, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(1, 1, 1, 1));
-	Sphere* ball1 = new Sphere(glm::vec2(20, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball2 = new Sphere(glm::vec2(28, -5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball3 = new Sphere(glm::vec2(28, 5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball4 = new Sphere(glm::vec2(36, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball5 = new Sphere(glm::vec2(36, -10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball6 = new Sphere(glm::vec2(36, 10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball7 = new Sphere(glm::vec2(44, -5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball8 = new Sphere(glm::vec2(44, 5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball9 = new Sphere(glm::vec2(44, -15), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball10 = new Sphere(glm::vec2(44, 15), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball11 = new Sphere(glm::vec2(52, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball12 = new Sphere(glm::vec2(52, -10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball13 = new Sphere(glm::vec2(52, 10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball14 = new Sphere(glm::vec2(52, -20), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	Sphere* ball15 = new Sphere(glm::vec2(52, 20), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_cueBall = new Sphere(glm::vec2(-60, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(1, 1, 1, 1));
+	m_ball1 = new Sphere(glm::vec2(20, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball2 = new Sphere(glm::vec2(28, -5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball3 = new Sphere(glm::vec2(28, 5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball4 = new Sphere(glm::vec2(36, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball5 = new Sphere(glm::vec2(36, -10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball6 = new Sphere(glm::vec2(36, 10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball7 = new Sphere(glm::vec2(44, -5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball8 = new Sphere(glm::vec2(44, 5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball9 = new Sphere(glm::vec2(44, -15), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball10 = new Sphere(glm::vec2(44, 15), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball11 = new Sphere(glm::vec2(52, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball12 = new Sphere(glm::vec2(52, -10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball13 = new Sphere(glm::vec2(52, 10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball14 = new Sphere(glm::vec2(52, -20), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball15 = new Sphere(glm::vec2(52, 20), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
 
-	m_physicsScene->AddActor(cueBall);
-	m_physicsScene->AddActor(ball1);
-	m_physicsScene->AddActor(ball2);
-	m_physicsScene->AddActor(ball3);
-	m_physicsScene->AddActor(ball4);
-	m_physicsScene->AddActor(ball5);
-	m_physicsScene->AddActor(ball6);
-	m_physicsScene->AddActor(ball7);
-	m_physicsScene->AddActor(ball8);
-	m_physicsScene->AddActor(ball9);
-	m_physicsScene->AddActor(ball10);
-	m_physicsScene->AddActor(ball11);
-	m_physicsScene->AddActor(ball12);
-	m_physicsScene->AddActor(ball13);
-	m_physicsScene->AddActor(ball14);
-	m_physicsScene->AddActor(ball15);
-
-	cueBall->ApplyForce(glm::vec2(200, 0), cueBall->GetPosition());
-
+	m_physicsScene->AddActor(m_cueBall);
+	m_physicsScene->AddActor(m_ball1);
+	m_physicsScene->AddActor(m_ball2);
+	m_physicsScene->AddActor(m_ball3);
+	m_physicsScene->AddActor(m_ball4);
+	m_physicsScene->AddActor(m_ball5);
+	m_physicsScene->AddActor(m_ball6);
+	m_physicsScene->AddActor(m_ball7);
+	m_physicsScene->AddActor(m_ball8);
+	m_physicsScene->AddActor(m_ball9);
+	m_physicsScene->AddActor(m_ball10);
+	m_physicsScene->AddActor(m_ball11);
+	m_physicsScene->AddActor(m_ball12);
+	m_physicsScene->AddActor(m_ball13);
+	m_physicsScene->AddActor(m_ball14);
+	m_physicsScene->AddActor(m_ball15);
 
 }
 
@@ -323,5 +311,31 @@ void PhysicsProjectApp::TriggerTest()
 	ball2->m_triggerExit = [=](PhysicsObject* other) {std::cout << "Exited" << other << std::endl; };
 
 
+
+}
+
+void PhysicsProjectApp::AimAndShoot(aie::Input* a_input)
+{
+	glm::vec2 cueBallPos = m_cueBall->GetPosition();
+	float extraForce = 5;
+	int xScreen, yScreen;
+	a_input->getMouseXY(&xScreen, &yScreen);
+	glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
+
+	
+	if (m_cueBall->GetVelocity().x < 0.1 && m_cueBall->GetVelocity().y < 0.1)
+	{
+		
+		if (a_input->isMouseButtonDown(0))
+		{
+			aie::Gizmos::add2DLine(worldPos, cueBallPos, glm::vec4(1, 0, 0, 1));
+		}
+
+		if (a_input->wasMouseButtonReleased(0))
+		{
+			m_cueBall->ApplyForce((glm::vec2(cueBallPos.x * extraForce, cueBallPos.y * extraForce) - glm::vec2(worldPos.x * extraForce, worldPos.y * extraForce)), glm::vec2(0));
+		}
+
+	}
 
 }
