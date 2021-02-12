@@ -78,5 +78,5 @@ protected:
 	Sphere* m_topRightPocket;
 	Sphere* m_botRightPocket;
 
-	float m_ballPosOnceSunken = -70.f;
+	float m_ballPosOnceSunken = -75.f;
 };

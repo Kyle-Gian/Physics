@@ -409,7 +409,7 @@ void PhysicsProjectApp::HasBallBeenSunk()
 			{
 				dynamic_cast<RigidBody*>(other)->SetPosition(glm::vec2(m_ballPosOnceSunken,54));
 				other->SetKinematic(true);
-				m_ballPosOnceSunken += 8;
+				m_ballPosOnceSunken += 6;
 			}
 		};
 	}
