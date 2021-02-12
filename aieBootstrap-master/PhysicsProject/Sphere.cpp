@@ -7,6 +7,7 @@ Sphere::Sphere(glm::vec2 a_position, glm::vec2 a_velocity, float a_mass, float a
 	m_color = a_color;
 	m_moment = 0.5f * m_mass * m_radius * m_radius;
 	
+	
 
 }
 
@@ -20,5 +21,13 @@ void Sphere::MakeGizmo()
 bool Sphere::IsInside(glm::vec2 a_point)
 {
 	return glm::distance(a_point, GetPosition()) <= GetRadius();
+}
+
+void Sphere::MakeVelocityZero(Sphere* a_sphere)
+{
+	if (a_sphere->GetVelocity().x <= 0.1 && a_sphere->GetVelocity().y <= 0.1)
+	{
+		a_sphere->SetVelocity(glm::vec2(0));
+	}
 }
 

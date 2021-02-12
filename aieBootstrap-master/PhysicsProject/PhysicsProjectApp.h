@@ -4,6 +4,7 @@
 #include "Renderer2D.h"
 #include "PhysicsScene.h"
 #include "Sphere.h"
+#include <vector>
 
 class PhysicsProjectApp : public aie::Application {
 public:
@@ -21,8 +22,8 @@ public:
 
 protected:
 
-	aie::Renderer2D*	m_2dRenderer;
-	aie::Font*			m_font;
+	aie::Renderer2D* m_2dRenderer;
+	aie::Font* m_font;
 
 	PhysicsScene* m_physicsScene;
 
@@ -30,14 +31,27 @@ protected:
 	const float m_extents = 100;
 
 public:
+
 	void DrawRect();
 	void SphereAndPlane();
 	void DrawPool();
 	void SpringTest(int a_amount);
 	void TriggerTest();
+	void AddBallToList(Sphere* a_ball);
+	void AddPocketsToList(Sphere* a_pockets);
+
+	void AddBallsToScene();
+	void AddPocketsToScene();
+
+
 	void AimAndShoot(aie::Input* a_input);
+	bool CheckBallVelocity();
+
+	void HasBallBeenSunk();
 
 protected:
+	std::vector<Sphere*> m_ballList;
+	std::vector<Sphere*> m_pocketsList;
 
 	Sphere* m_cueBall;
 	Sphere* m_ball1;
@@ -55,4 +69,14 @@ protected:
 	Sphere* m_ball13;
 	Sphere* m_ball14;
 	Sphere* m_ball15;
+
+	Sphere* m_topLeftPocket;
+	Sphere* m_botLeftPocket;
+	Sphere* m_topMidPocket;
+	Sphere* m_botMidPocket;
+
+	Sphere* m_topRightPocket;
+	Sphere* m_botRightPocket;
+
+	float m_ballPosOnceSunken;
 };

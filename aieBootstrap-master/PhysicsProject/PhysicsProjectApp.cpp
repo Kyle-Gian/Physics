@@ -15,7 +15,14 @@ PhysicsProjectApp::PhysicsProjectApp() {
 }
 
 PhysicsProjectApp::~PhysicsProjectApp() {
-
+	for (auto pBall : m_ballList)
+	{
+		delete pBall;
+	}
+	for (auto pPocket : m_pocketsList)
+	{
+		delete pPocket;
+	}
 }
 
 bool PhysicsProjectApp::startup() {
@@ -30,7 +37,7 @@ bool PhysicsProjectApp::startup() {
 	m_physicsScene = new PhysicsScene();
 
 	m_physicsScene->SetGravity(glm::vec2(0, 0));
-	
+
 
 	//lower the value, the more accurate the simulation will be;
 	// but it will increase the processing time required. If it 
@@ -58,8 +65,10 @@ void PhysicsProjectApp::update(float deltaTime) {
 	m_physicsScene->Update(deltaTime);
 	m_physicsScene->Draw();
 
-
-	AimAndShoot(input);
+	if (CheckBallVelocity())
+	{
+		AimAndShoot(input);
+	}
 
 
 	// exit the application
@@ -152,7 +161,7 @@ void PhysicsProjectApp::SphereAndPlane()
 
 void PhysicsProjectApp::DrawPool()
 {
-	// Add walls to scene
+	// Create the walls
 	Box* leftWall = new Box(glm::vec2(-98, 0), glm::vec2(0, 0), 0, 4, 1, 45, glm::vec4(1, 0, 0, 1));
 	Box* rightWall = new Box(glm::vec2(98, 0), glm::vec2(0, 0), 0, 4, 1, 45, glm::vec4(1, 0, 0, 1));
 
@@ -182,50 +191,50 @@ void PhysicsProjectApp::DrawPool()
 	topLeftWall->SetKinematic(true);
 	topRightWall->SetKinematic(true);
 
-	//Draw Pockets
-	Sphere* topLeftPocket = new Sphere(glm::vec2(-95, 52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
-	Sphere* botLeftPocket = new Sphere(glm::vec2(-95, -52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+	//Create Pockets
+	m_topLeftPocket = new Sphere(glm::vec2(-95, 52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+	m_botLeftPocket = new Sphere(glm::vec2(-95, -52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
 
-	Sphere* topMidPocket = new Sphere(glm::vec2(0, 56), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
-	Sphere* botMidPocket = new Sphere(glm::vec2(0, -56), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+	m_topMidPocket = new Sphere(glm::vec2(0, 56), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+	m_botMidPocket = new Sphere(glm::vec2(0, -56), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
 
-	Sphere* topRightPocket = new Sphere(glm::vec2(95, 52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
-	Sphere* botRightPocket = new Sphere(glm::vec2(95, -52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+	m_topRightPocket = new Sphere(glm::vec2(95, 52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+	m_botRightPocket = new Sphere(glm::vec2(95, -52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
 
 
-	//Add actor to scene
-	m_physicsScene->AddActor(topLeftPocket);
-	m_physicsScene->AddActor(botLeftPocket);
+	//Add Pockets to the list of Pockets
+	AddPocketsToList(m_topLeftPocket);
+	AddPocketsToList(m_botLeftPocket);
 
-	m_physicsScene->AddActor(topMidPocket);
-	m_physicsScene->AddActor(botMidPocket);
+	AddPocketsToList(m_topMidPocket);
+	AddPocketsToList(m_botMidPocket);
 
-	m_physicsScene->AddActor(topRightPocket);
-	m_physicsScene->AddActor(botRightPocket);
+	AddPocketsToList(m_topRightPocket);
+	AddPocketsToList(m_botRightPocket);
 
 
 	//Sets Pockets to kinematic
-	topLeftPocket->SetKinematic(true);
-	botLeftPocket->SetKinematic(true);
+	m_topLeftPocket->SetKinematic(true);
+	m_botLeftPocket->SetKinematic(true);
 
-	topMidPocket->SetKinematic(true);
-	botMidPocket->SetKinematic(true);
+	m_topMidPocket->SetKinematic(true);
+	m_botMidPocket->SetKinematic(true);
 
-	topRightPocket->SetKinematic(true);
-	botRightPocket->SetKinematic(true);
+	m_topRightPocket->SetKinematic(true);
+	m_botRightPocket->SetKinematic(true);
 
 	// Set Pockets as triggers
-	topLeftPocket->SetTrigger(true);
-	botLeftPocket->SetTrigger(true);
+	m_topLeftPocket->SetTrigger(true);
+	m_botLeftPocket->SetTrigger(true);
 
-	topMidPocket->SetTrigger(true);
-	botMidPocket->SetTrigger(true);
+	m_topMidPocket->SetTrigger(true);
+	m_botMidPocket->SetTrigger(true);
 
-	topRightPocket->SetTrigger(true);
-	botRightPocket->SetTrigger(true);
+	m_topRightPocket->SetTrigger(true);
+	m_botRightPocket->SetTrigger(true);
 
 
-	//Draw Pool Balls
+	//Create the Pool Balls
 	m_cueBall = new Sphere(glm::vec2(-60, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(1, 1, 1, 1));
 	m_ball1 = new Sphere(glm::vec2(20, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
 	m_ball2 = new Sphere(glm::vec2(28, -5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
@@ -234,7 +243,7 @@ void PhysicsProjectApp::DrawPool()
 	m_ball5 = new Sphere(glm::vec2(36, -10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
 	m_ball6 = new Sphere(glm::vec2(36, 10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
 	m_ball7 = new Sphere(glm::vec2(44, -5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball8 = new Sphere(glm::vec2(44, 5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball8 = new Sphere(glm::vec2(44, 5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 0, 0, 1));
 	m_ball9 = new Sphere(glm::vec2(44, -15), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
 	m_ball10 = new Sphere(glm::vec2(44, 15), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
 	m_ball11 = new Sphere(glm::vec2(52, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
@@ -243,23 +252,27 @@ void PhysicsProjectApp::DrawPool()
 	m_ball14 = new Sphere(glm::vec2(52, -20), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
 	m_ball15 = new Sphere(glm::vec2(52, 20), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
 
-	m_physicsScene->AddActor(m_cueBall);
-	m_physicsScene->AddActor(m_ball1);
-	m_physicsScene->AddActor(m_ball2);
-	m_physicsScene->AddActor(m_ball3);
-	m_physicsScene->AddActor(m_ball4);
-	m_physicsScene->AddActor(m_ball5);
-	m_physicsScene->AddActor(m_ball6);
-	m_physicsScene->AddActor(m_ball7);
-	m_physicsScene->AddActor(m_ball8);
-	m_physicsScene->AddActor(m_ball9);
-	m_physicsScene->AddActor(m_ball10);
-	m_physicsScene->AddActor(m_ball11);
-	m_physicsScene->AddActor(m_ball12);
-	m_physicsScene->AddActor(m_ball13);
-	m_physicsScene->AddActor(m_ball14);
-	m_physicsScene->AddActor(m_ball15);
+	//Add balls to List of balls
+	AddBallToList(m_cueBall);
+	AddBallToList(m_ball1);
+	AddBallToList(m_ball2);
+	AddBallToList(m_ball3);
+	AddBallToList(m_ball4);
+	AddBallToList(m_ball5);
+	AddBallToList(m_ball6);
+	AddBallToList(m_ball7);
+	AddBallToList(m_ball8);
+	AddBallToList(m_ball9);
+	AddBallToList(m_ball10);
+	AddBallToList(m_ball11);
+	AddBallToList(m_ball12);
+	AddBallToList(m_ball13);
+	AddBallToList(m_ball14);
+	AddBallToList(m_ball15);
 
+	//Add items to scene from the lists
+	AddBallsToScene();
+	AddPocketsToScene();
 }
 
 void PhysicsProjectApp::SpringTest(int a_amount)
@@ -314,6 +327,32 @@ void PhysicsProjectApp::TriggerTest()
 
 }
 
+void PhysicsProjectApp::AddBallToList(Sphere* a_ball)
+{
+	m_ballList.push_back(a_ball);
+}
+
+void PhysicsProjectApp::AddPocketsToList(Sphere* a_pockets)
+{
+	m_pocketsList.push_back(a_pockets);
+}
+
+void PhysicsProjectApp::AddBallsToScene()
+{
+	for (auto pBall : m_ballList)
+	{
+		m_physicsScene->AddActor(pBall);
+	}
+}
+
+void PhysicsProjectApp::AddPocketsToScene()
+{
+	for (auto pPockets : m_pocketsList)
+	{
+		m_physicsScene->AddActor(pPockets);
+	}
+}
+
 void PhysicsProjectApp::AimAndShoot(aie::Input* a_input)
 {
 	glm::vec2 cueBallPos = m_cueBall->GetPosition();
@@ -322,20 +361,57 @@ void PhysicsProjectApp::AimAndShoot(aie::Input* a_input)
 	a_input->getMouseXY(&xScreen, &yScreen);
 	glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
 
-	
-	if (m_cueBall->GetVelocity().x < 0.1 && m_cueBall->GetVelocity().y < 0.1)
+
+	//If balls have stopped moving run this code
+
+	if (a_input->isMouseButtonDown(0))
 	{
-		
-		if (a_input->isMouseButtonDown(0))
-		{
-			aie::Gizmos::add2DLine(worldPos, cueBallPos, glm::vec4(1, 0, 0, 1));
-		}
-
-		if (a_input->wasMouseButtonReleased(0))
-		{
-			m_cueBall->ApplyForce((glm::vec2(cueBallPos.x * extraForce, cueBallPos.y * extraForce) - glm::vec2(worldPos.x * extraForce, worldPos.y * extraForce)), glm::vec2(0));
-		}
-
+		aie::Gizmos::add2DLine(worldPos, cueBallPos, glm::vec4(1, 0, 0, 1));
 	}
 
+	if (a_input->wasMouseButtonReleased(0))
+	{
+		m_cueBall->ApplyForce((glm::vec2(cueBallPos.x * extraForce, cueBallPos.y * extraForce) - glm::vec2(worldPos.x * extraForce, worldPos.y * extraForce)), glm::vec2(0));
+	}
+	HasBallBeenSunk();
+
+}
+
+bool PhysicsProjectApp::CheckBallVelocity()
+{
+	for (auto pBall : m_ballList)
+	{
+		if (glm::sqrt(pBall->GetVelocity().x * pBall->GetVelocity().x + pBall->GetVelocity().y * pBall->GetVelocity().y) <= 0.2)
+		{
+			pBall->SetVelocity(glm::vec2(0));
+		}
+		else
+		{
+			return false;
+		}
+		return true;
+	}
+}
+
+void PhysicsProjectApp::HasBallBeenSunk()
+{
+
+	for (auto pPockets : m_pocketsList)
+	{
+		pPockets->m_triggerEnter = [=](PhysicsObject* other)
+		{
+
+			if (other == m_cueBall)
+			{
+				m_cueBall->SetPosition(glm::vec2(-60, 0));
+				m_cueBall->SetVelocity(glm::vec2(0));
+			}
+			if (other != m_cueBall)
+			{
+				dynamic_cast<RigidBody*>(other)->SetPosition(glm::vec2(m_ballPosOnceSunken,40));
+				other->SetKinematic(true);
+				m_ballPosOnceSunken += 5;
+			}
+		};
+	}
 }

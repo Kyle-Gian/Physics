@@ -14,6 +14,8 @@ public:
 
 	glm::vec4 GetColor() { return m_color; }
 
+	void MakeVelocityZero(Sphere* a_sphere);
+
 protected:
 	float m_radius;
 	glm::vec4 m_color;

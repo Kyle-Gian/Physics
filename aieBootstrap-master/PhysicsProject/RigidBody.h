@@ -30,6 +30,7 @@ public:
 
 	glm::vec2 SetPosition(glm::vec2 a_newPos) { return m_position = a_newPos; }
 	float SetRotation(float a_rotate) { return m_rotation = a_rotate; }
+	glm::vec2 SetVelocity(glm::vec2 a_velocity) { return m_velocity = a_velocity; }
 
 	float GetLinearDrag() { return m_linearDrag; }
 	float GetAngularDrag() { return m_angularDrag; }
