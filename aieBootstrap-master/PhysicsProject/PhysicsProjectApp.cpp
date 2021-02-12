@@ -400,7 +400,6 @@ void PhysicsProjectApp::HasBallBeenSunk()
 	{
 		pPockets->m_triggerEnter = [=](PhysicsObject* other)
 		{
-
 			if (other == m_cueBall)
 			{
 				m_cueBall->SetPosition(glm::vec2(-60, 0));
@@ -408,9 +407,9 @@ void PhysicsProjectApp::HasBallBeenSunk()
 			}
 			if (other != m_cueBall)
 			{
-				dynamic_cast<RigidBody*>(other)->SetPosition(glm::vec2(m_ballPosOnceSunken,40));
+				dynamic_cast<RigidBody*>(other)->SetPosition(glm::vec2(m_ballPosOnceSunken,54));
 				other->SetKinematic(true);
-				m_ballPosOnceSunken += 5;
+				m_ballPosOnceSunken += 8;
 			}
 		};
 	}
