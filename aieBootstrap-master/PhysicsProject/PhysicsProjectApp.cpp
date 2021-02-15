@@ -235,22 +235,22 @@ void PhysicsProjectApp::DrawPool()
 
 
 	//Create the Pool Balls
-	m_cueBall = new Sphere(glm::vec2(-60, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(1, 1, 1, 1));
-	m_ball1 = new Sphere(glm::vec2(20, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball2 = new Sphere(glm::vec2(28, -5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball3 = new Sphere(glm::vec2(28, 5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball4 = new Sphere(glm::vec2(36, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball5 = new Sphere(glm::vec2(36, -10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball6 = new Sphere(glm::vec2(36, 10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball7 = new Sphere(glm::vec2(44, -5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball8 = new Sphere(glm::vec2(44, 5), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 0, 0, 1));
-	m_ball9 = new Sphere(glm::vec2(44, -15), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball10 = new Sphere(glm::vec2(44, 15), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball11 = new Sphere(glm::vec2(52, 0), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball12 = new Sphere(glm::vec2(52, -10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball13 = new Sphere(glm::vec2(52, 10), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball14 = new Sphere(glm::vec2(52, -20), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
-	m_ball15 = new Sphere(glm::vec2(52, 20), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	m_cueBall = new Sphere(glm::vec2(-60, 0), glm::vec2(0, 0), 4.f, 3, glm::vec4(1, 1, 1, 1));
+	m_ball1 = new Sphere(glm::vec2(20, 0), glm::vec2(0, 0), 4.f, 3, glm::vec4(0, 1, 0, 1));
+	m_ball2 = new Sphere(glm::vec2(28, -5), glm::vec2(0, 0), 4.f, 3, glm::vec4(1, 0, 0, 0));
+	m_ball3 = new Sphere(glm::vec2(28, 5), glm::vec2(0, 0), 4.f, 3, glm::vec4(0, 1, 0, 0));
+	m_ball4 = new Sphere(glm::vec2(36, 0), glm::vec2(0, 0), 4.f, 3, glm::vec4(0, 0, 1, 1));
+	m_ball5 = new Sphere(glm::vec2(36, -10), glm::vec2(0, 0), 4.f, 3, glm::vec4(0, 0, 1, 0));
+	m_ball6 = new Sphere(glm::vec2(36, 10), glm::vec2(0, 0), 4.f, 3, glm::vec4(1, 0, 0, 0));
+	m_ball7 = new Sphere(glm::vec2(44, -5), glm::vec2(0, 0), 4.f, 3, glm::vec4(0.5f, 0.5f, 0, 1));
+	m_ball8 = new Sphere(glm::vec2(44, 5), glm::vec2(0, 0), 4.f, 3, glm::vec4(0, 0, 0, 1));
+	m_ball9 = new Sphere(glm::vec2(44, -15), glm::vec2(0, 0), 4.f, 3, glm::vec4(0.5f, 0.5f, 0, 0));
+	m_ball10 = new Sphere(glm::vec2(44, 15), glm::vec2(0, 0), 4.f, 3, glm::vec4(0.5f, 1, 0.5f, 1));
+	m_ball11 = new Sphere(glm::vec2(52, 0), glm::vec2(0, 0), 4.f, 3, glm::vec4(0.5f, 1, 0.5f, 0));
+	m_ball12 = new Sphere(glm::vec2(52, -10), glm::vec2(0, 0), 4.f, 3, glm::vec4(0, 1, 0.5f, 1));
+	m_ball13 = new Sphere(glm::vec2(52, 10), glm::vec2(0, 0), 4.f, 3, glm::vec4(0, 1, 0.5f, 0));
+	m_ball14 = new Sphere(glm::vec2(52, -20), glm::vec2(0, 0), 4.f, 3, glm::vec4(0.5f, 0.5f, 0.5f, 1));
+	m_ball15 = new Sphere(glm::vec2(52, 20), glm::vec2(0, 0), 4.f, 3, glm::vec4(0.5f, 0.5f, 0.5f, 0));
 
 	//Add balls to List of balls
 	AddBallToList(m_cueBall);
@@ -356,22 +356,27 @@ void PhysicsProjectApp::AddPocketsToScene()
 void PhysicsProjectApp::AimAndShoot(aie::Input* a_input)
 {
 	glm::vec2 cueBallPos = m_cueBall->GetPosition();
-	float extraForce = 5;
+	float extraForce = 30.f;
 	int xScreen, yScreen;
 	a_input->getMouseXY(&xScreen, &yScreen);
 	glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
+	glm::vec2 dist = cueBallPos - worldPos;
 
 
+	if (glm::length(dist) > 20)
+	{
+		dist = glm::normalize(dist) * 20.f;
+	}
 	//If balls have stopped moving run this code
 
 	if (a_input->isMouseButtonDown(0))
 	{
-		aie::Gizmos::add2DLine(worldPos, cueBallPos, glm::vec4(1, 0, 0, 1));
+		aie::Gizmos::add2DLine(cueBallPos, cueBallPos - dist, glm::vec4(1, 0, 0, 1));
 	}
 
 	if (a_input->wasMouseButtonReleased(0))
 	{
-		m_cueBall->ApplyForce((glm::vec2(cueBallPos.x * extraForce, cueBallPos.y * extraForce) - glm::vec2(worldPos.x * extraForce, worldPos.y * extraForce)), glm::vec2(0));
+		m_cueBall->ApplyForce((dist * extraForce), glm::vec2(0));
 	}
 	HasBallBeenSunk();
 

@@ -82,7 +82,7 @@ void RigidBody::FixedUpdate(glm::vec2 a_gravity, float a_timeStep)
 void RigidBody::ApplyForce(glm::vec2 a_force, glm::vec2 a_pos)
 {
 	m_velocity += a_force / GetMass();
-	m_angularVelocity += (a_force.y * a_pos.x - a_force.x * a_pos.y) / GetMoment();
+	m_angularVelocity += (a_force.y * a_pos.x + a_force.x * a_pos.y) / GetMoment();
 }
 
 void RigidBody::ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact, glm::vec2* a_collisionNormal, float a_pen)
