@@ -37,6 +37,5 @@ protected:
 
 	bool m_isKinematic;
 	float m_elasticity;
-
 };
 

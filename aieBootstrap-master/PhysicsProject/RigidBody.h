@@ -17,8 +17,6 @@ public:
 	void ResolveCollision(RigidBody* a_otherActor, glm::vec2 a_contact, glm::vec2* a_collisionNormal = nullptr, float a_pen = 0);
 
 
-
-
 	glm::vec2 GetPosition() const { return m_position; }
 	glm::vec2 GetVelocity() { return m_velocity; }
 	float GetMass() { return m_isKinematic ? INT_MAX : m_mass; }

@@ -31,7 +31,6 @@ protected:
 	const float m_extents = 100;
 
 public:
-
 	void DrawRect();
 	void SphereAndPlane();
 	void DrawPool();
