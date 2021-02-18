@@ -47,35 +47,40 @@ public:
 	bool CheckBallVelocity();
 
 	void HasBallBeenSunk();
+	void ResetBallPositions();
 
 protected:
 	std::vector<Sphere*> m_ballList;
 	std::vector<Sphere*> m_pocketsList;
+	std::vector<glm::vec2> m_ballStartPos;
 
-	Sphere* m_cueBall;
-	Sphere* m_ball1;
-	Sphere* m_ball2;
-	Sphere* m_ball3;
-	Sphere* m_ball4;
-	Sphere* m_ball5;
-	Sphere* m_ball6;
-	Sphere* m_ball7;
-	Sphere* m_ball8;
-	Sphere* m_ball9;
-	Sphere* m_ball10;
-	Sphere* m_ball11;
-	Sphere* m_ball12;
-	Sphere* m_ball13;
-	Sphere* m_ball14;
-	Sphere* m_ball15;
+	Sphere* m_cueBall = nullptr;
+	Sphere* m_ball1 = nullptr;
+	Sphere* m_ball2 = nullptr;
+	Sphere* m_ball3 = nullptr;
+	Sphere* m_ball4 = nullptr;
+	Sphere* m_ball5 = nullptr;
+	Sphere* m_ball6 = nullptr;
+	Sphere* m_ball7 = nullptr;
+	Sphere* m_ball8 = nullptr;
+	Sphere* m_ball9 = nullptr;
+	Sphere* m_ball10 = nullptr;
+	Sphere* m_ball11 = nullptr;
+	Sphere* m_ball12 = nullptr;
+	Sphere* m_ball13 = nullptr;
+	Sphere* m_ball14 = nullptr;
+	Sphere* m_ball15 = nullptr;
 
-	Sphere* m_topLeftPocket;
-	Sphere* m_botLeftPocket;
-	Sphere* m_topMidPocket;
-	Sphere* m_botMidPocket;
+	Sphere* m_topLeftPocket = nullptr;
+	Sphere* m_botLeftPocket = nullptr;
+	Sphere* m_topMidPocket = nullptr;
+	Sphere* m_botMidPocket = nullptr;
 
-	Sphere* m_topRightPocket;
-	Sphere* m_botRightPocket;
+	Sphere* m_topRightPocket = nullptr;
+	Sphere* m_botRightPocket = nullptr;
 
 	float m_ballPosOnceSunken = -75.f;
+	bool m_shotTaken = false;
+	bool m_ballSunkDuringTurn = false;
+	bool m_ballVelocityZero = true;
 };

@@ -67,9 +67,16 @@ void PhysicsProjectApp::update(float deltaTime) {
 
 	if (CheckBallVelocity())
 	{
+
 		AimAndShoot(input);
 	}
-
+	if (m_shotTaken)
+	{
+		if (!m_ballSunkDuringTurn && m_ballVelocityZero)
+		{
+			ResetBallPositions();
+		}
+	}
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -79,7 +86,6 @@ void PhysicsProjectApp::update(float deltaTime) {
 void PhysicsProjectApp::draw() {
 	// wipe the screen to the background colour
 	clearScreen();
-
 
 	// X-axis = -100 to 100, y-axis = -56.25 to 56.25
 	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents, -m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.f, 1.f));
@@ -342,6 +348,7 @@ void PhysicsProjectApp::AddBallsToScene()
 	for (auto pBall : m_ballList)
 	{
 		m_physicsScene->AddActor(pBall);
+		m_ballStartPos.push_back(pBall->GetPosition());
 	}
 }
 
@@ -376,10 +383,13 @@ void PhysicsProjectApp::AimAndShoot(aie::Input* a_input)
 
 	if (a_input->wasMouseButtonReleased(0))
 	{
+		m_ballSunkDuringTurn = false;
+
 		m_cueBall->ApplyForce((dist * extraForce), glm::vec2(0));
+		m_shotTaken = true;
+		m_ballVelocityZero = false;
 	}
 	HasBallBeenSunk();
-
 }
 
 bool PhysicsProjectApp::CheckBallVelocity()
@@ -389,18 +399,20 @@ bool PhysicsProjectApp::CheckBallVelocity()
 		if (glm::sqrt(pBall->GetVelocity().x * pBall->GetVelocity().x + pBall->GetVelocity().y * pBall->GetVelocity().y) <= 0.2)
 		{
 			pBall->SetVelocity(glm::vec2(0));
+
 		}
 		else
 		{
 			return false;
 		}
+		m_ballVelocityZero = true;
+
 		return true;
 	}
 }
 
 void PhysicsProjectApp::HasBallBeenSunk()
 {
-
 	for (auto pPockets : m_pocketsList)
 	{
 		pPockets->m_triggerEnter = [=](PhysicsObject* other)
@@ -415,7 +427,19 @@ void PhysicsProjectApp::HasBallBeenSunk()
 				dynamic_cast<RigidBody*>(other)->SetPosition(glm::vec2(m_ballPosOnceSunken,54));
 				other->SetKinematic(true);
 				m_ballPosOnceSunken += 6;
-			}
+				m_ballSunkDuringTurn = true;
+			}		
 		};
 	}
+}
+
+void PhysicsProjectApp::ResetBallPositions()
+{
+	for (int i = 0; i < m_ballList.size(); i++)
+	{
+		m_ballList[i]->SetPosition(m_ballStartPos[i]);
+	}
+
+	m_ballSunkDuringTurn = false;
+	m_shotTaken = false;
 }
