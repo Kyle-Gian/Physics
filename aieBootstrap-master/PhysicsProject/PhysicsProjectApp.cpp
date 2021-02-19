@@ -438,6 +438,7 @@ void PhysicsProjectApp::ResetBallPositions()
 	for (int i = 0; i < m_ballList.size(); i++)
 	{
 		m_ballList[i]->SetPosition(m_ballStartPos[i]);
+		m_ballList[i]->SetKinematic(false);
 	}
 
 	m_ballSunkDuringTurn = false;
