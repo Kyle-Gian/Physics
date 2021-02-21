@@ -168,14 +168,14 @@ void PhysicsProjectApp::SphereAndPlane()
 void PhysicsProjectApp::DrawPool()
 {
 	// Create the walls
-	Box* leftWall = new Box(glm::vec2(-98, 0), glm::vec2(0, 0), 0, 4, 1, 45, glm::vec4(1, 0, 0, 1));
-	Box* rightWall = new Box(glm::vec2(98, 0), glm::vec2(0, 0), 0, 4, 1, 45, glm::vec4(1, 0, 0, 1));
+	Box* leftWall = new Box(glm::vec2(-96, 0), glm::vec2(0, 0), 0, 4, 4, 41, glm::vec4(0.4f, 0.2f, 0, 1));
+	Box* rightWall = new Box(glm::vec2(96, 0), glm::vec2(0, 0), 0, 4, 4, 41, glm::vec4(0.4f, 0.2f, 0, 1));
 
-	Box* botLeftWall = new Box(glm::vec2(-48, -54.2), glm::vec2(0, 0), 0, 4, 40, 1, glm::vec4(1, 0, 0, 1));
-	Box* botRightWall = new Box(glm::vec2(48, -54.2), glm::vec2(0, 0), 0, 4, 40, 1, glm::vec4(1, 0, 0, 1));
+	Box* botLeftWall = new Box(glm::vec2(-48, -52.2), glm::vec2(0, 0), 0, 4, 39, 4, glm::vec4(0.4f, 0.2f, 0, 1));
+	Box* botRightWall = new Box(glm::vec2(48, -52.2), glm::vec2(0, 0), 0, 4, 39, 4, glm::vec4(0.4f, 0.2f, 0, 1));
 
-	Box* topLeftWall = new Box(glm::vec2(-48, 54.2), glm::vec2(0, 0), 0, 4, 40, 1, glm::vec4(1, 0, 0, 1));
-	Box* topRightWall = new Box(glm::vec2(48, 54.2), glm::vec2(0, 0), 0, 4, 40, 1, glm::vec4(1, 0, 0, 1));
+	Box* topLeftWall = new Box(glm::vec2(-48, 52.2), glm::vec2(0, 0), 0, 4, 39, 4, glm::vec4(0.4f, 0.2f, 0, 1));
+	Box* topRightWall = new Box(glm::vec2(48, 52.2), glm::vec2(0, 0), 0, 4, 39, 4, glm::vec4(0.4f, 0.2f, 0, 1));
 
 	//Add walls to scene
 	m_physicsScene->AddActor(leftWall);
@@ -198,14 +198,14 @@ void PhysicsProjectApp::DrawPool()
 	topRightWall->SetKinematic(true);
 
 	//Create Pockets
-	m_topLeftPocket = new Sphere(glm::vec2(-95, 52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
-	m_botLeftPocket = new Sphere(glm::vec2(-95, -52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+	m_topLeftPocket = new Sphere(glm::vec2(-95, 52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 0, 0, 1));
+	m_botLeftPocket = new Sphere(glm::vec2(-95, -52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 0, 0, 1));
 
-	m_topMidPocket = new Sphere(glm::vec2(0, 56), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
-	m_botMidPocket = new Sphere(glm::vec2(0, -56), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+	m_topMidPocket = new Sphere(glm::vec2(0, 56), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 0, 0, 1));
+	m_botMidPocket = new Sphere(glm::vec2(0, -56), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 0, 0, 1));
 
-	m_topRightPocket = new Sphere(glm::vec2(95, 52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
-	m_botRightPocket = new Sphere(glm::vec2(95, -52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 1, 0, 1));
+	m_topRightPocket = new Sphere(glm::vec2(95, 52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 0, 0, 1));
+	m_botRightPocket = new Sphere(glm::vec2(95, -52), glm::vec2(0, 0), 3.f, 5, glm::vec4(0, 0, 0, 1));
 
 
 	//Add Pockets to the list of Pockets
@@ -424,7 +424,7 @@ void PhysicsProjectApp::HasBallBeenSunk()
 			}
 			if (other != m_cueBall)
 			{
-				dynamic_cast<RigidBody*>(other)->SetPosition(glm::vec2(m_ballPosOnceSunken,54));
+				dynamic_cast<RigidBody*>(other)->SetPosition(glm::vec2(m_ballPosOnceSunken,52));
 				other->SetKinematic(true);
 				m_ballPosOnceSunken += 6;
 				m_ballSunkDuringTurn = true;
