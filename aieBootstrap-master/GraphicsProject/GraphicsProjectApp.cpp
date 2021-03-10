@@ -97,6 +97,8 @@ void GraphicsProjectApp::DrawPlanets()
 
 bool GraphicsProjectApp::LoadShaderAndMeshLogic()
 {
+#pragma region Quad
+
 	// Load the Vertex shader from a file
 	m_simpleShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
 
@@ -109,7 +111,29 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic()
 		return false;
 	}
 
-	m_quadMesh.InitialiseQuad();
+	//m_quadMesh.InitialiseQuad();
+
+
+
+		//Define the 6 vertices  for the 2 triangles that make the quad
+	/*Mesh::Vertex verticesNoIndex[6];
+	verticesNoIndex[0].position = { -0.5f, 0.f, 0.5f, 1.f };
+	verticesNoIndex[1].position = { 0.5f, 0.f, 0.5f, 1.f };
+	verticesNoIndex[2].position = { -0.5f, 0.f, -0.5f, 1.f };
+
+	verticesNoIndex[3].position = { -0.5f, 0.f, -0.5f, 1.f };
+	verticesNoIndex[4].position = { 0.5f, 0.f, 0.5f, 1.f };
+	verticesNoIndex[5].position = { 0.5f, 0.f, -0.5f, 1.f };*/
+
+	Mesh::Vertex vertices[4];
+	vertices[0].position = { -0.5f, 0.f, 0.5f, 1.f };
+	vertices[1].position = { 0.5f, 0.f, 0.5f, 1.f };
+	vertices[2].position = { -0.5f, 0.f, -0.5f, 1.f };
+	vertices[3].position = { 0.5f, 0.f, -0.5f, 1.f }; 
+
+	unsigned int indices[6] = { 0,1,2,2,1,3 };
+
+	m_quadMesh.Initialise(4, vertices, 6 ,indices);
 
 	//We will make the quad 10 units by 10 units
 	m_quadTransform = {
@@ -118,20 +142,65 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic()
 		0,0,10,0,
 		0,0,0,1
 	};
+	m_quadTransform = glm::rotate(m_quadTransform, 3.14f / 2, glm::vec3(1, 0, 0));
+
+#pragma endregion
+#pragma region Bunny
+	// Load the Vertex shader from a file
+	m_bunnyShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
+
+	//Load the fragment shader from a file
+	m_bunnyShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/simple.frag");
+
+	if (!m_bunnyShader.link())
+	{
+		printf("Bunny Shader had an error: %s\n", m_bunnyShader.getLastError());
+		return false;
+	
+	}
+
+	if (m_bunnyMesh.load("./stanford/bunny.obj") == false)
+	{
+		printf("Bunny Mesh Failed!\n");
+		return false;
+	}
+
+	m_bunnyTransform = {
+		0.5f,0,0,0,
+		0,0.5f,0,0,
+		0,0,0.5f,0,
+		0,0,0,1
+	};
+#pragma endregion
 
 	return true;
 }
 
 void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::mat4 a_viewMatrix)
 {
+	auto pvm = a_projectionMatrix * a_viewMatrix * glm::mat4(0);
+#pragma region Quad
 	//Bind the shader
 	m_simpleShader.bind();
 
 	//Bind the transforms of the mesh
 
-	auto pvm = a_projectionMatrix * a_viewMatrix * m_quadTransform; //PVM = Projection View Matrix
+	pvm = a_projectionMatrix * a_viewMatrix * m_quadTransform; //PVM = Projection View Matrix
 	m_simpleShader.bindUniform("ProjectionViewModel", pvm);
 
 	m_quadMesh.Draw();
+#pragma endregion
+
+#pragma region Bunny
+	m_bunnyShader.bind();
+	pvm = a_projectionMatrix * a_viewMatrix * m_bunnyTransform;
+	m_bunnyShader.bindUniform("ProjectionViewModel", pvm);
+	m_bunnyShader.bindUniform("MeshFlatColor", glm::vec4(0, 1, 0, 1));
+
+	// Draw bunny Mesh
+	m_bunnyMesh.draw();
+#pragma endregion
+
+
 
 }

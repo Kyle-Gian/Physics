@@ -4,6 +4,7 @@
 #include <glm/mat4x4.hpp>
 #include "Mesh.h"
 #include "Shader.h"
+#include "OBJMesh.h"
 
 class GraphicsProjectApp : public aie::Application {
 public:
@@ -27,10 +28,15 @@ protected:
 
 	// SHADER
 	aie::ShaderProgram m_simpleShader;
+	aie::ShaderProgram m_bunnyShader;
 	//
-
+	//Basic Plane
 	Mesh m_quadMesh;
 	glm::mat4 m_quadTransform;
+
+	//Create a bunny with a flat color
+	aie::OBJMesh m_bunnyMesh;
+	glm::mat4 m_bunnyTransform;
 
 public:
 	bool LoadShaderAndMeshLogic();
