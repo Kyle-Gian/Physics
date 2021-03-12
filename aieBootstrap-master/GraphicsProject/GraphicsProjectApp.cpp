@@ -144,33 +144,33 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic()
 #pragma region QuadShader
 
 	// Load the Vertex shader from a file
-	m_simpleShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
+	//m_simpleShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
 
 	//Load the fragment shader from a file
-	m_simpleShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/simple.frag");
+	//m_simpleShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/simple.frag");
 
-	if (!m_simpleShader.link())
-	{
-		printf("Simple Shader had an error: %s\n", m_simpleShader.getLastError());
-		return false;
-	}
+	//if (!m_simpleShader.link())
+	//{
+		//printf("Simple Shader had an error: %s\n", m_simpleShader.getLastError());
+		//return false;
+	//}
 
 
 #pragma endregion
 
 #pragma region BunnyShader
 	// Load the Vertex shader from a file
-	m_bunnyShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
+	//m_bunnyShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
 
-	//Load the fragment shader from a file
-	m_bunnyShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/simple.frag");
+	////Load the fragment shader from a file
+	//m_bunnyShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/simple.frag");
 
-	if (!m_bunnyShader.link())
-	{
-		printf("Bunny Shader had an error: %s\n", m_bunnyShader.getLastError());
-		return false;
+	//if (!m_bunnyShader.link())
+	//{
+	//	printf("Bunny Shader had an error: %s\n", m_bunnyShader.getLastError());
+	//	return false;
 
-	}
+	//}
 #pragma region DragonShader
 	// Load the Vertex shader from a file
 	//m_dragonShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
@@ -320,67 +320,24 @@ verticesNoIndex[3].position = { -0.5f, 0.f, -0.5f, 1.f };
 verticesNoIndex[4].position = { 0.5f, 0.f, 0.5f, 1.f };
 verticesNoIndex[5].position = { 0.5f, 0.f, -0.5f, 1.f };*/
 
-//Mesh::Vertex vertices[4];
-//vertices[0].position = { -0.5f, 0.f, 0.5f, 1.f };
-//vertices[1].position = { 0.5f, 0.f, 0.5f, 1.f };
-//vertices[2].position = { -0.5f, 0.f, -0.5f, 1.f };
-//vertices[3].position = { 0.5f, 0.f, -0.5f, 1.f };
+	//Mesh::Vertex vertices[4];
+	//vertices[0].position = { -0.5f, 0.f, 0.5f, 1.f };
+	//vertices[1].position = { 0.5f, 0.f, 0.5f, 1.f };
+	//vertices[2].position = { -0.5f, 0.f, -0.5f, 1.f };
+	//vertices[3].position = { 0.5f, 0.f, -0.5f, 1.f };
 
-//unsigned int indices[6] = { 0,1,2,2,1,3 };
+	//unsigned int indices[6] = { 0,1,2,2,1,3 };
 
-//m_quadMesh.InitialiseQuad();
+	//m_quadMesh.Initialise(4, vertices, 6, indices);
 
-
-////m_quadMesh.Initialise(4, vertices, 6, indices);
-
-////We will make the quad 10 units by 10 units
-//m_quadTransform = {
-//	10,0,0,0,
-//	0,10,0,0,
-//	0,0,10,0,
-//	0,0,0,1
-//};
-//m_quadTransform = glm::rotate(m_quadTransform, 3.14f / 2, glm::vec3(1, 0, 0));
-#pragma endregion
-
-#pragma region GridLogic
-
-	if (m_gridTexture.load("./textures/numbered_grid.tga") == false)
-	{
-		printf("Failed to load: numbered_grid.tga\n");
-		return false;
-	}
-#pragma endregion
-
-#pragma region SoulSpearLogic
-	//if (m_spearMesh.load("./soulspear/soulspear.obj", true, true) == false)
-	//{
-	//	printf("Soulspear Mesh has had an error! \n");
-	//	return false;
-	//}
-
-	//m_spearTransform = {
-	//	1,0,0,0,
-	//	0,1,0,0,
-	//	0,0,1,0,
+	////We will make the quad 10 units by 10 units
+	//m_quadTransform = {
+	//	10,0,0,0,
+	//	0,10,0,0,
+	//	0,0,10,0,
 	//	0,0,0,1
 	//};
-#pragma endregion
-
-#pragma region ColtLogic
-
-	if (m_coltMesh.load("./colt/source/colt.obj", true, true) == false)
-	{
-		printf("Colt Mesh has had an error! \n");
-		return false;
-	}
-
-	m_coltTransform = {
-		0.01f,0,0,0,
-		0,0.01f,0,0,
-		0,0,0.01f,0,
-		0,0,0,1
-	};
+	//m_quadTransform = glm::rotate(m_quadTransform, 3.14f / 2, glm::vec3(1, 0, 0));
 #pragma endregion
 
 
