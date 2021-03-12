@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "OBJMesh.h"
+#include <vector>
 
 class GraphicsProjectApp : public aie::Application {
 public:
@@ -24,15 +25,23 @@ public:
 protected:
 
 	Camera m_camera;
+	std::vector<Camera> m_cameraArray;
+	int m_cameraArraySize = 0;
+	int m_cameraNumber = 0;
 
 	// camera transforms
 	glm::mat4	m_viewMatrix;
 	glm::mat4	m_projectionMatrix;
 
+	aie::Texture m_gridTexture;
+
 	// SHADER
 	aie::ShaderProgram m_simpleShader;
 	aie::ShaderProgram m_bunnyShader;
 	aie::ShaderProgram m_phongShader;
+	aie::ShaderProgram m_textureShader;
+	aie::ShaderProgram m_normalMapShader;
+
 
 	//
 	//Basic Plane
@@ -58,6 +67,14 @@ protected:
 	glm::mat4 m_buddhaTransform;
 	glm::vec3 m_buddhaPosition{ 0,0,0 };
 
+	//Create a soulspear
+	aie::OBJMesh m_spearMesh;
+	glm::mat4 m_spearTransform;
+	glm::vec3 m_spearPosition{ 0,0,0 };
+
+	aie::OBJMesh m_coltMesh;
+	glm::mat4 m_coltTransform;
+	glm::vec3 m_coltPosition{ 0,0,0 };
 
 	struct Light
 	{
@@ -69,6 +86,7 @@ protected:
 
 	glm::vec3 m_ambientLight;
 public:
+	void CameraLocations();
 	bool LoadShaderAndMeshLogic();
 	void DrawShaderAndMeshes(glm::mat4, glm::mat4);
 	void IMGUI_Logic();
