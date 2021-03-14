@@ -83,8 +83,12 @@ protected:
 	};
 
 	Light m_light;
+	Light* m_light1 = new Light();
+
 
 	glm::vec3 m_ambientLight;
+	glm::vec3 m_ambientLight1;
+
 public:
 	void CameraLocations();
 	bool LoadShaderAndMeshLogic();

@@ -16,6 +16,7 @@ GraphicsProjectApp::GraphicsProjectApp() {
 
 GraphicsProjectApp::~GraphicsProjectApp() {
 
+	
 }
 
 bool GraphicsProjectApp::startup() {
@@ -30,7 +31,12 @@ bool GraphicsProjectApp::startup() {
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
 	m_light.color = { 1,1,0 };
+	m_light1->direction = {1,0,0};
+	m_light1->color = { 1,1,0 };
+	m_light.direction = glm::vec3(-1, 0, 0);
 	m_ambientLight = { 0.25f,0.25f,0.25f };
+	m_ambientLight1 = { 0.25f,0.25f,0.25f };
+
 
 	m_cameraArray.push_back(m_camera);
 
@@ -40,6 +46,7 @@ bool GraphicsProjectApp::startup() {
 void GraphicsProjectApp::shutdown() {
 
 	Gizmos::destroy();
+	delete m_light1;
 }
 
 void GraphicsProjectApp::update(float deltaTime) {
@@ -65,19 +72,7 @@ void GraphicsProjectApp::update(float deltaTime) {
 
 	m_camera.Update(deltaTime);
 
-	// Change the positions by a given vector3 set by the GUI. Used for the translate GUI
-	//Moves object each frame by that vector
-	m_bunnyTransform = glm::translate(m_bunnyTransform, m_bunnyPosition);
-	m_dragonTransform = glm::translate(m_dragonTransform, m_dragonPosition);
-	m_buddhaTransform = glm::translate(m_buddhaTransform, m_buddhaPosition);
-	m_lucyTransform = glm::translate(m_lucyTransform, m_lucyPosition);
-
-
 	IMGUI_Logic();
-
-	float time = getTime();
-
-	m_light.direction = glm::normalize(glm::vec3(glm::cos(time * 2), glm::sin(time * 2), 0));
 
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
@@ -273,34 +268,34 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic()
 
 #pragma region BuddhaLogic
 	//Load the file as a mesh
-	if (m_buddhaMesh.load("./stanford/buddha.obj") == false)
-	{
-		printf("Buddha Mesh Failed!\n");
-		return false;
-	}
-	//Give a Transform for Buddha with scale being set
-	m_buddhaTransform = {
-		0.5f,0,0,0,
-		0,0.5f,0,0,
-		0,0,0.5f,0,
-		0,0,0,1
-	};
+	//if (m_buddhaMesh.load("./stanford/buddha.obj") == false)
+	//{
+	//	printf("Buddha Mesh Failed!\n");
+	//	return false;
+	//}
+	////Give a Transform for Buddha with scale being set
+	//m_buddhaTransform = {
+	//	0.5f,0,0,0,
+	//	0,0.5f,0,0,
+	//	0,0,0.5f,0,
+	//	0,0,0,1
+	//};
 #pragma endregion
 
 #pragma region LucyLogic
 	//Load the file as a mesh
-	if (m_lucyMesh.load("./stanford/lucy.obj") == false)
-	{
-		printf("Lucy Mesh Failed!\n");
-		return false;
-	}
-	//Give a Transform for Lucy with scale being set
-	m_lucyTransform = {
-		0.5f,0,0,0,
-		0,0.5f,0,0,
-		0,0,0.5f,0,
-		0,0,0,1
-	};
+	//if (m_lucyMesh.load("./stanford/lucy.obj") == false)
+	//{
+	//	printf("Lucy Mesh Failed!\n");
+	//	return false;
+	//}
+	////Give a Transform for Lucy with scale being set
+	//m_lucyTransform = {
+	//	0.5f,0,0,0,
+	//	0,0.5f,0,0,
+	//	0,0,0.5f,0,
+	//	0,0,0,1
+	//};
 #pragma endregion
 
 
@@ -320,26 +315,42 @@ verticesNoIndex[3].position = { -0.5f, 0.f, -0.5f, 1.f };
 verticesNoIndex[4].position = { 0.5f, 0.f, 0.5f, 1.f };
 verticesNoIndex[5].position = { 0.5f, 0.f, -0.5f, 1.f };*/
 
-	//Mesh::Vertex vertices[4];
-	//vertices[0].position = { -0.5f, 0.f, 0.5f, 1.f };
-	//vertices[1].position = { 0.5f, 0.f, 0.5f, 1.f };
-	//vertices[2].position = { -0.5f, 0.f, -0.5f, 1.f };
-	//vertices[3].position = { 0.5f, 0.f, -0.5f, 1.f };
+//Mesh::Vertex vertices[4];
+//vertices[0].position = { -0.5f, 0.f, 0.5f, 1.f };
+//vertices[1].position = { 0.5f, 0.f, 0.5f, 1.f };
+//vertices[2].position = { -0.5f, 0.f, -0.5f, 1.f };
+//vertices[3].position = { 0.5f, 0.f, -0.5f, 1.f };
 
-	//unsigned int indices[6] = { 0,1,2,2,1,3 };
+//unsigned int indices[6] = { 0,1,2,2,1,3 };
 
-	//m_quadMesh.Initialise(4, vertices, 6, indices);
+//m_quadMesh.Initialise(4, vertices, 6, indices);
 
-	////We will make the quad 10 units by 10 units
-	//m_quadTransform = {
-	//	10,0,0,0,
-	//	0,10,0,0,
-	//	0,0,10,0,
-	//	0,0,0,1
-	//};
-	//m_quadTransform = glm::rotate(m_quadTransform, 3.14f / 2, glm::vec3(1, 0, 0));
+////We will make the quad 10 units by 10 units
+//m_quadTransform = {
+//	10,0,0,0,
+//	0,10,0,0,
+//	0,0,10,0,
+//	0,0,0,1
+//};
+//m_quadTransform = glm::rotate(m_quadTransform, 3.14f / 2, glm::vec3(1, 0, 0));
 #pragma endregion
 
+#pragma region ColtLogic
+//Load the file as a mesh
+	if (m_coltMesh.load("./colt/source/colt.obj") == false)
+	{
+		printf("Colt Mesh Failed!\n");
+		return false;
+	}
+
+	//Give a Transform for Dragon with scale being set
+	m_coltTransform = {
+		0.01f,0,0,0,
+		0,0.01f,0,0,
+		0,0,0.01f,0,
+		0,0,0,1
+	};
+#pragma endregion
 
 
 
@@ -464,8 +475,14 @@ void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::
 
 	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
 	m_normalMapShader.bindUniform("AmbientColor", m_ambientLight);
+	m_normalMapShader.bindUniform("AmbientColor1", m_ambientLight1);
+
+
 	m_normalMapShader.bindUniform("LightColor", m_light.color);
 	m_normalMapShader.bindUniform("LightDirection", m_light.direction);
+	m_normalMapShader.bindUniform("LightColor1", m_light1->color);
+	m_normalMapShader.bindUniform("LightDirection1", m_light1->direction);
+
 
 	//Bind the lighting Transforms
 	m_normalMapShader.bindUniform("ModelMatrix", m_coltTransform);
@@ -473,9 +490,6 @@ void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::
 	//Draw the buddha
 	m_coltMesh.draw();
 #pragma endregion
-
-
-
 
 }
 
@@ -486,30 +500,26 @@ void GraphicsProjectApp::IMGUI_Logic()
 	ImGui::DragFloat3("Sunlight Direction", &m_light.direction[0], 0.1f, -1.f, 1.f);
 	ImGui::DragFloat3("Sunlight Color", &m_light.color[0], 0.1f, 0.f, 2.f);
 
+	//ImGui::DragFloat("Sunlight Direction", m_light1->direction.x, 0.1f, -1.f, 1.f);
+
+	//ImGui::DragFloat3("Sunlight Color", m_light1->color[0], 0.1f, 0.f, 2.f);
+
 	ImGui::End();
 
 	//Change the position of the objects with the GUI
 	ImGui::Begin("Position For Objects");
 
-	ImGui::DragFloat3("Bunny Position", &m_bunnyTransform[3][0], 1.f, -20, 20.f);
-	ImGui::DragFloat3("Dragon Position", &m_dragonTransform[3][0], 1.f, -20.f, 20.f);
-	ImGui::DragFloat3("Buddha Position", &m_buddhaTransform[3][0], 1.f, -20.f, 20.f);
-	ImGui::DragFloat3("Lucy Position", &m_lucyTransform[3][0], 1.f, -20.f, 20.f);
+	//ImGui::DragFloat3("Bunny Position", &m_bunnyTransform[3][0], 1.f, -20, 20.f);
+	//ImGui::DragFloat3("Dragon Position", &m_dragonTransform[3][0], 1.f, -20.f, 20.f);
+	//ImGui::DragFloat3("Buddha Position", &m_buddhaTransform[3][0], 1.f, -20.f, 20.f);
+	//ImGui::DragFloat3("Lucy Position", &m_lucyTransform[3][0], 1.f, -20.f, 20.f);
+	ImGui::DragFloat3("Colt Position", &m_coltTransform[3][0], 1.f, -20.f, 20.f);
+
 
 	ImGui::End();
 
 	ImGui::Begin("Camera's ");
 
 	ImGui::End();
-
-
-	/*ImGui::Begin("Transform For Objects");
-
-	ImGui::DragFloat3("Bunny Transform", &m_bunnyPosition[0], 0.001f, -2.f, 2.f);
-	ImGui::DragFloat3("Dragon Transform", &m_dragonPosition[0], 0.001f, -2.f, 2.f);
-	ImGui::DragFloat3("Buddha Transform", &m_buddhaPosition[0], 0.001f, -2.f, 2.f);
-	ImGui::DragFloat3("Lucy Transform", &m_lucyPosition[0], 0.001f, -2.f, 2.f);
-
-	ImGui::End();*/
 
 }
