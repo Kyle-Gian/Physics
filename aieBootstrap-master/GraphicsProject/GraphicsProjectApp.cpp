@@ -44,16 +44,14 @@ bool GraphicsProjectApp::startup() {
 	//	m_light[i] = new Light();
 	//	m_light[i]->color = { 1,1,0 };
 	//	m_light[i]->direction = glm::vec3(-1 + i, 0, 0);
-	//	m_light[i]->m_ambientLight = { 0.25f,0.25f,0.25f };
 	//}
 
 	m_light.color = glm::vec3(1, 1, 0);
 	m_light.direction = glm::vec3(1, 0, 1);
-	m_light.m_ambientLight = { 0.25f,0.25f,0.25f };
+	m_ambientLight = { 0.25f,0.25f,0.25f };
 
 	m_light1->color = { 1,1,0 };
 	m_light1->direction = glm::vec3(-1, 0, -1);
-	m_light1->m_ambientLight = { 0.25f,0.25f,0.25f };
 
 	return LoadShaderAndMeshLogic();
 }
@@ -364,6 +362,23 @@ verticesNoIndex[5].position = { 0.5f, 0.f, -0.5f, 1.f };*/
 //m_quadTransform = glm::rotate(m_quadTransform, 3.14f / 2, glm::vec3(1, 0, 0));
 #pragma endregion
 
+#pragma region SpearLogic
+	//Load the file as a mesh
+	if (m_spearMesh.load("./soulspear/soulspear.obj", true, true) == false)
+	{
+		printf("Spear Mesh Failed!\n");
+		return false;
+	}
+	//Give a Transform for Lucy with scale being set
+	m_spearTransform = {
+		0.5f,0,0,0,
+		0,0.5f,0,0,
+		0,0,0.5f,0,
+		0,0,0,1
+	};
+#pragma endregion
+
+
 #pragma region ColtLogic
 //Load the file as a mesh
 	if (m_coltMesh.load("./colt/source/colt.obj") == false)
@@ -479,21 +494,25 @@ void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::
 
 
 #pragma region SoulSpear
-	//m_normalMapShader.bind();
-	//pvm = a_projectionMatrix * a_viewMatrix * m_spearTransform;
-	////Bind the PVM
-	//m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
+	m_normalMapShader.bind();
+	pvm = a_projectionMatrix * a_viewMatrix * m_spearTransform;
+	//Bind the PVM
+	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
 
-	//m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
-	//m_normalMapShader.bindUniform("AmbientColor", m_ambientLight);
-	//m_normalMapShader.bindUniform("LightColor", m_light.color);
-	//m_normalMapShader.bindUniform("LightDirection", m_light.direction);
+	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
+	m_normalMapShader.bindUniform("AmbientColor", m_ambientLight);
+	m_normalMapShader.bindUniform("LightColor", m_light.color);
+	m_normalMapShader.bindUniform("LightDirection", m_light.direction);
+	m_normalMapShader.bindUniform("LightDirection1", m_light1->direction);
+	m_normalMapShader.bindUniform("LightDirection1", m_light1->color);
 
-	////Bind the lighting Transforms
-	//m_normalMapShader.bindUniform("ModelMatrix", m_spearTransform);
 
-	////Draw the buddha
-	//m_spearMesh.draw();
+
+	//Bind the lighting Transforms
+	m_normalMapShader.bindUniform("ModelMatrix", m_spearTransform);
+
+	//Draw the buddha
+	m_spearMesh.draw();
 #pragma endregion
 
 #pragma region Colt
@@ -503,11 +522,10 @@ void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::
 	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
 	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
 
-	m_normalMapShader.bindUniform("AmbientColor", m_light.m_ambientLight);
+	m_normalMapShader.bindUniform("AmbientColor", m_ambientLight);
 	m_normalMapShader.bindUniform("LightColor", m_light.color);
 	m_normalMapShader.bindUniform("LightDirection", m_light.direction);
 
-	m_normalMapShader.bindUniform("AmbientColor1", m_light1->m_ambientLight);
 	m_normalMapShader.bindUniform("LightColor1", m_light1->color);
 	m_normalMapShader.bindUniform("LightDirection1", m_light1->direction);
 

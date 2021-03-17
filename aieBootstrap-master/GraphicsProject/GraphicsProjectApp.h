@@ -82,9 +82,9 @@ protected:
 	{
 		glm::vec3 color;
 		glm::vec3 direction;
-		glm::vec3 m_ambientLight;
 	};
 	int numberOfLights = 4;
+	glm::vec3 m_ambientLight;
 
 	Light m_light;
 	Light* m_light1 = new Light();

@@ -23,7 +23,6 @@ uniform vec3 LightDirection;
 
 uniform vec3 LightColor1; //Color of the Light1
 uniform vec3 LightDirection1;
-uniform vec3 AmbientColor1;
 
 
 uniform vec3 CameraPosition; // Position of the viewport camera for specular calculations
@@ -61,15 +60,12 @@ void main() {
 
 
     // Determining the value of the specular term
-    float specularTerm = pow(max(0,dot(R, V)), 32);
-    float specularTerm1 = pow(max(0,dot(R1, V)), 32);
+    float specularTerm = pow(max(0,dot(R, V)), Ns) * lambertTerm;
+    float specularTerm1 = pow(max(0,dot(R1, V)), Ns) * lambertTerm1;
 
 
     //Determine the value of the ambient
     vec3 ambient = AmbientColor * Ka * texDiffuse;
-    vec3 ambient1 = AmbientColor1 * Ka * texDiffuse;
-
-
 
     //Deteremine the valuse of the diffuse
     vec3 diffuse = LightColor * Kd * texDiffuse * lambertTerm;
@@ -96,5 +92,5 @@ void main() {
 
     //Output the final color
 
-    FragColor = vec4((ambient + ambient1) + (diffuse + diffuse1) + (specular + specular1 ), 1);
+    FragColor = vec4(ambient + (diffuse + diffuse1) + (specular + specular1 ), 1);
 }
