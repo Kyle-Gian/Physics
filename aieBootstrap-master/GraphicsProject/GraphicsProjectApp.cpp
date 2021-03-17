@@ -16,7 +16,11 @@ GraphicsProjectApp::GraphicsProjectApp() {
 
 GraphicsProjectApp::~GraphicsProjectApp() {
 
-	
+	/*for (size_t i = 0; i < numberOfLights; i++)
+	{
+		delete m_light[i];
+	}*/
+
 }
 
 bool GraphicsProjectApp::startup() {
@@ -30,15 +34,26 @@ bool GraphicsProjectApp::startup() {
 	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
-	m_light.color = { 1,1,0 };
-	m_light1->direction = {1,0,0};
-	m_light1->color = { 1,1,0 };
-	m_light.direction = glm::vec3(-1, 0, 0);
-	m_ambientLight = { 0.25f,0.25f,0.25f };
-	m_ambientLight1 = { 0.25f,0.25f,0.25f };
+
 
 
 	m_cameraArray.push_back(m_camera);
+
+	//for (size_t i = 0; i < numberOfLights; i++)
+	//{
+	//	m_light[i] = new Light();
+	//	m_light[i]->color = { 1,1,0 };
+	//	m_light[i]->direction = glm::vec3(-1 + i, 0, 0);
+	//	m_light[i]->m_ambientLight = { 0.25f,0.25f,0.25f };
+	//}
+
+	m_light.color = glm::vec3(1, 1, 0);
+	m_light.direction = glm::vec3(1, 0, 1);
+	m_light.m_ambientLight = { 0.25f,0.25f,0.25f };
+
+	m_light1->color = { 1,1,0 };
+	m_light1->direction = glm::vec3(-1, 0, -1);
+	m_light1->m_ambientLight = { 0.25f,0.25f,0.25f };
 
 	return LoadShaderAndMeshLogic();
 }
@@ -46,7 +61,8 @@ bool GraphicsProjectApp::startup() {
 void GraphicsProjectApp::shutdown() {
 
 	Gizmos::destroy();
-	delete m_light1;
+
+
 }
 
 void GraphicsProjectApp::update(float deltaTime) {
@@ -226,6 +242,19 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic()
 
 	}
 #pragma endregion
+#pragma region NewShader
+
+	/*m_newMapShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/newShader.vert");
+	m_newMapShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/newShader.frag");
+
+	if (!m_newMapShader.link())
+	{
+		printf("Normal Map Shader had an error: %s\n", m_newMapShader.getLastError());
+		return false;
+
+	}*/
+#pragma endregion
+
 
 
 #pragma endregion
@@ -472,17 +501,24 @@ void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::
 	pvm = a_projectionMatrix * a_viewMatrix * m_coltTransform;
 	//Bind the PVM
 	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
-
 	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
-	m_normalMapShader.bindUniform("AmbientColor", m_ambientLight);
-	m_normalMapShader.bindUniform("AmbientColor1", m_ambientLight1);
 
-
+	m_normalMapShader.bindUniform("AmbientColor", m_light.m_ambientLight);
 	m_normalMapShader.bindUniform("LightColor", m_light.color);
 	m_normalMapShader.bindUniform("LightDirection", m_light.direction);
+
+	m_normalMapShader.bindUniform("AmbientColor1", m_light1->m_ambientLight);
 	m_normalMapShader.bindUniform("LightColor1", m_light1->color);
 	m_normalMapShader.bindUniform("LightDirection1", m_light1->direction);
 
+	//m_newMapShader.bindUniform("NumberOfLights", numberOfLights);
+
+	//for (size_t i = 0; i < numberOfLights; i++)
+	//{
+	//	m_newMapShader.bindUniform("AmbientColor", numberOfLights, &m_light[i]->m_ambientLight);
+	//	m_newMapShader.bindUniform("LightColor",numberOfLights, &m_light[i]->color);
+	//	m_newMapShader.bindUniform("LightDirection",numberOfLights, &m_light[i]->direction);
+	//}
 
 	//Bind the lighting Transforms
 	m_normalMapShader.bindUniform("ModelMatrix", m_coltTransform);
@@ -497,12 +533,12 @@ void GraphicsProjectApp::IMGUI_Logic()
 {
 	ImGui::Begin("Scene Light Settings");
 
-	ImGui::DragFloat3("Sunlight Direction", &m_light.direction[0], 0.1f, -1.f, 1.f);
-	ImGui::DragFloat3("Sunlight Color", &m_light.color[0], 0.1f, 0.f, 2.f);
+	ImGui::DragFloat3("Sunlight Direction 1", &m_light.direction[0], 0.1f, -10.f, 10.f);
+	ImGui::DragFloat3("Sunlight Color 1", &m_light.color[0], 0.1f, 0.f, 2.f);
 
-	//ImGui::DragFloat("Sunlight Direction", m_light1->direction.x, 0.1f, -1.f, 1.f);
+	ImGui::DragFloat3("Sunlight Direction 2", &m_light1->direction[0], 0.1f, -10.f, 10.f);
 
-	//ImGui::DragFloat3("Sunlight Color", m_light1->color[0], 0.1f, 0.f, 2.f);
+	ImGui::DragFloat3("Sunlight Color 2", &m_light1->color[0], 0.1f, 0.f, 2.f);
 
 	ImGui::End();
 

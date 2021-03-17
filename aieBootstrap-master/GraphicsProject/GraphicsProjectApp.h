@@ -41,6 +41,8 @@ protected:
 	aie::ShaderProgram m_phongShader;
 	aie::ShaderProgram m_textureShader;
 	aie::ShaderProgram m_normalMapShader;
+	aie::ShaderProgram m_newMapShader;
+
 
 
 	//
@@ -80,18 +82,19 @@ protected:
 	{
 		glm::vec3 color;
 		glm::vec3 direction;
+		glm::vec3 m_ambientLight;
 	};
+	int numberOfLights = 4;
 
 	Light m_light;
 	Light* m_light1 = new Light();
 
-
-	glm::vec3 m_ambientLight;
-	glm::vec3 m_ambientLight1;
 
 public:
 	void CameraLocations();
 	bool LoadShaderAndMeshLogic();
 	void DrawShaderAndMeshes(glm::mat4, glm::mat4);
 	void IMGUI_Logic();
+
+
 };

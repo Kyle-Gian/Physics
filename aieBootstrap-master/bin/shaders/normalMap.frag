@@ -29,8 +29,6 @@ uniform vec3 AmbientColor1;
 uniform vec3 CameraPosition; // Position of the viewport camera for specular calculations
 
 out vec4 FragColor;
-out vec4 FragColor1;
-
 void main() {
 
     //Make sure the normal and the light directions have been normalised
@@ -98,6 +96,5 @@ void main() {
 
     //Output the final color
 
-    FragColor = vec4(ambient + diffuse + specular, 1);
-    FragColor1 = vec4(ambient1 + diffuse1 + specular1, 1);
+    FragColor = vec4((ambient + ambient1) + (diffuse + diffuse1) + (specular + specular1 ), 1);
 }
