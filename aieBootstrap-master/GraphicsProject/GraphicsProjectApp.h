@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "OBJMesh.h"
 #include <vector>
+#include"Scene.h"
 
 class GraphicsProjectApp : public aie::Application {
 public:
@@ -78,22 +79,25 @@ protected:
 	glm::mat4 m_coltTransform;
 	glm::vec3 m_coltPosition{ 0,0,0 };
 
-	struct Light
+	/*struct Light
 	{
 		glm::vec3 color;
 		glm::vec3 direction;
-	};
+	};*/
 	int numberOfLights = 4;
 	glm::vec3 m_ambientLight;
 
-	Light m_light;
-	Light* m_light1 = new Light();
+	Scene* m_scene;
+	
+
+	/*Light m_light;
+	Light* m_light1 = new Light();*/
 
 
 public:
 	void CameraLocations();
-	bool LoadShaderAndMeshLogic();
-	void DrawShaderAndMeshes(glm::mat4, glm::mat4);
+	bool LoadShaderAndMeshLogic(Light a_light);
+	//void DrawShaderAndMeshes(glm::mat4, glm::mat4);
 	void IMGUI_Logic();
 
 
