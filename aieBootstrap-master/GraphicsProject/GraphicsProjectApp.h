@@ -20,14 +20,13 @@ public:
 
 	virtual void update(float deltaTime);
 	virtual void draw();
-
-	void DrawPlanets();
-
 protected:
 
-	Camera m_camera;
-	std::vector<Camera> m_cameraArray;
-	int m_cameraArraySize = 0;
+	Camera* m_camera;
+	Camera* m_camera1 = new Camera();
+	Camera* camera2 = new Camera();
+
+	std::vector<Camera*> m_cameraArray;
 	int m_cameraNumber = 0;
 
 	// camera transforms
@@ -45,8 +44,6 @@ protected:
 	aie::ShaderProgram m_newMapShader;
 
 
-
-	//
 	//Basic Plane
 	Mesh m_quadMesh;
 	glm::mat4 m_quadTransform;
@@ -79,23 +76,14 @@ protected:
 	glm::mat4 m_coltTransform;
 	glm::vec3 m_coltPosition{ 0,0,0 };
 
-	/*struct Light
-	{
-		glm::vec3 color;
-		glm::vec3 direction;
-	};*/
 	int numberOfLights = 4;
 	glm::vec3 m_ambientLight;
+	int m_objectPos = 0;
 
 	Scene* m_scene;
 	
-
-	/*Light m_light;
-	Light* m_light1 = new Light();*/
-
-
 public:
-	void CameraLocations();
+	void Inputs();
 	bool LoadShaderAndMeshLogic(Light a_light);
 	//void DrawShaderAndMeshes(glm::mat4, glm::mat4);
 	void IMGUI_Logic();

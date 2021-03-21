@@ -55,13 +55,13 @@ void Camera::Update(float deltaTime)
 	float mx = input->getMouseX();
 	float my = input->getMouseY();
 	
-	const float tuenSpeed = glm::radians(180.f);
+	const float turnSpeed = glm::radians(180.f);
 
 	//If the right button is down, increment the theta and phi
 	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_RIGHT))
 	{
-		m_theta += tuenSpeed * (mx - m_lastMouseX) * deltaTime;
-		m_phi += tuenSpeed * (my - m_lastMouseY) * deltaTime;
+		m_theta += turnSpeed * (mx - m_lastMouseX) * deltaTime;
+		m_phi += turnSpeed * (my - m_lastMouseY) * deltaTime;
 	}
 
 	//Now store the frames last values for the next

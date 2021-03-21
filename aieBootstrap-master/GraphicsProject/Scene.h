@@ -43,7 +43,7 @@ public:
 	glm::vec3* GetPointLightColors() { return &m_pointLightColors[0]; }
 
 	std::vector<Light>& GetPointLights() { return m_pointLights; }
-	std::list<Instance*> GetInstances() { return m_instances; }
+	std::vector<Instance*> GetInstances() { return m_instances; }
 
 
 protected:
@@ -53,7 +53,7 @@ protected:
 	Light m_sunLight;
 	std::vector<Light> m_pointLights;
 	glm::vec3 m_ambientLight;
-	std::list<Instance*> m_instances;
+	std::vector<Instance*> m_instances;
 
 	glm::vec3 m_pointLightPositions[MAX_LIGHTS];
 	glm::vec3 m_pointLightColors[MAX_LIGHTS];

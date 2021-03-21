@@ -20,10 +20,6 @@ GraphicsProjectApp::GraphicsProjectApp() {
 
 GraphicsProjectApp::~GraphicsProjectApp() {
 
-	/*for (size_t i = 0; i < numberOfLights; i++)
-	{
-		delete m_light[i];
-	}*/
 
 }
 
@@ -40,6 +36,10 @@ bool GraphicsProjectApp::startup() {
 
 	m_cameraArray.push_back(m_camera);
 
+	m_cameraArray.push_back(m_camera1);
+	m_cameraArray.push_back(m_camera2);
+
+
 
 	Light light = Light(vec3(1, 1, 1), vec3(1, 1, 1), 1.f);
 
@@ -51,6 +51,11 @@ void GraphicsProjectApp::shutdown() {
 
 	Gizmos::destroy();
 	delete m_scene;
+
+	for (size_t i = 0; i < m_cameraArray.size(); i++)
+	{
+		delete m_cameraArray[i];
+	}
 
 }
 
@@ -74,7 +79,10 @@ void GraphicsProjectApp::update(float deltaTime) {
 	// add a transform so that we can see the axis
 	Gizmos::addTransform(mat4(1));
 
+
 	m_camera.Update(deltaTime);
+
+	Inputs();
 
 	IMGUI_Logic();
 
@@ -99,22 +107,54 @@ void GraphicsProjectApp::draw() {
 
 }
 
-void GraphicsProjectApp::CameraLocations()
+void GraphicsProjectApp::Inputs()
 {
 	aie::Input* input = aie::Input::getInstance();
 
+	int instancesSize = 0;
+	int cameraSize = 0;
+	instancesSize = m_scene->GetInstances().size();
+	cameraSize = m_cameraArray.size();
 
-	if (input->isKeyDown(aie::INPUT_KEY_UP))
+	//If the UP key has been pressed and the number isn't greater then the vector size increase the vector position
+
+	if (m_objectPos != instancesSize - 1)
 	{
-
+		if (input->wasKeyPressed(aie::INPUT_KEY_UP))
+		{
+			m_objectPos++;
+		}
 	}
-	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
+	//If the DOWN key has been pressed and the number isn't greater then the vector size decrease the vector position
+
+	if (m_objectPos > 0)
 	{
+		if (input->wasKeyPressed(aie::INPUT_KEY_DOWN))
+		{
+			m_objectPos--;
 
+		}
 	}
 
 
+	if (m_cameraNumber != cameraSize - 1)
+	{
+		//If the E key has been pressed and the number isn't greater then increase camera size to change camera
+		if (input->wasKeyPressed(aie::INPUT_KEY_E))
+		{
+			m_cameraNumber++;
+		}
+	}
+	//If the Q key has been pressed and the number isn't greater then increase camera size to change camera
+	if (m_cameraNumber > 0)
+	{
+		if (input->wasKeyPressed(aie::INPUT_KEY_Q))
+		{
+			m_cameraNumber--;
 
+		}
+	}
+	
 }
 
 bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
@@ -177,7 +217,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 
 #pragma region ColtLogic
-//Load the file as a mesh
+	//Load the file as a mesh
 	if (m_coltMesh.load("./colt/source/colt.obj", true, true) == false)
 	{
 		printf("Colt Mesh Failed!\n");
@@ -190,21 +230,22 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 #pragma endregion
 	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f));
 
-	m_scene->AddInstances(new Instance(glm::vec3( 1, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1), &m_spearMesh, &m_normalMapShader));
+	m_scene->AddInstances(new Instance("Spear", glm::vec3(1, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1), &m_spearMesh, &m_normalMapShader));
 
-	m_scene->AddInstances(new Instance(glm::vec3(-2, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0.01f), &m_coltMesh, &m_normalMapShader));
+	m_scene->AddInstances(new Instance("Colt", glm::vec3(-2, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0.01f), &m_coltMesh, &m_normalMapShader));
 
-	m_scene->AddInstances(new Instance(glm::vec3(0, 0, -2), glm::vec3(0, 0, 0), glm::vec3(0.5f), &m_bunnyMesh, &m_phongShader));
+	m_scene->AddInstances(new Instance("Bunny", glm::vec3(0, 0, -2), glm::vec3(0, 0, 0), glm::vec3(0.5f), &m_bunnyMesh, &m_phongShader));
 
 
-	m_scene->GetPointLights().push_back(Light(vec3(5, 3, 0), vec3(1,1,1), 50));
-	m_scene->GetPointLights().push_back(Light(vec3(-5, 3, 0), vec3(1, 1, 1), 50));
+	m_scene->GetPointLights().push_back(Light(vec3(5, 3, 0), vec3(0, 1, 0), 10));
+	m_scene->GetPointLights().push_back(Light(vec3(-5, 3, 0), vec3(1, 0, 0), 10));
 
 	return true;
 }
 
 void GraphicsProjectApp::IMGUI_Logic()
 {
+
 	ImGui::Begin("Scene Light Settings");
 
 	ImGui::DragFloat3("Sunlight Direction 1", &m_scene->GetLight().m_direction[0], 0.1f, -10.f, 10.f);
@@ -216,19 +257,30 @@ void GraphicsProjectApp::IMGUI_Logic()
 
 	ImGui::End();
 
-	//Change the position of the objects with the GUI
-	ImGui::Begin("Position For Objects");
-
-	ImGui::DragFloat3("Bunny Position", &m_scene->GetInstances()[3][0], 1.f, -20, 20.f);
-	//ImGui::DragFloat3("Dragon Position", &m_dragonTransform[3][0], 1.f, -20.f, 20.f);
-	//ImGui::DragFloat3("Buddha Position", &m_buddhaTransform[3][0], 1.f, -20.f, 20.f);
-	//ImGui::DragFloat3("Lucy Position", &m_lucyTransform[3][0], 1.f, -20.f, 20.f);
-	ImGui::DragFloat3("Colt Position", &m_coltTransform[3][0], 1.f, -20.f, 20.f);
 
 
-	ImGui::End();
+	//Change the position, rotation and scale of the objects with the GUI
+	if (m_scene->GetInstances().size() != NULL)
+	{
+		ImGui::Begin("Position For Objects");
+		ImGui::DragFloat3(m_scene->GetInstances()[m_objectPos]->GetString(), &m_scene->GetInstances()[m_objectPos]->m_position[0], 0.5f, -20, 20.f);
+		ImGui::End();
+
+		ImGui::Begin("Rotation For Objects");
+		ImGui::DragFloat3(m_scene->GetInstances()[m_objectPos]->GetString(), &m_scene->GetInstances()[m_objectPos]->m_eulerAngles[0], 1.f, -90, 90.f);
+		ImGui::End();
+
+		ImGui::Begin("Scale For Objects");
+		ImGui::DragFloat3(m_scene->GetInstances()[m_objectPos]->GetString(), &m_scene->GetInstances()[m_objectPos]->m_scale[0], .1f, 0, 2.f);
+		ImGui::End();
+
+		m_scene->GetInstances()[m_objectPos]->UpdateTransform();  
+	}
 
 	ImGui::Begin("Camera's ");
+
+	ImGui::DragFloat3("Camera " + m_cameraNumber, &m_cameraArray[m_cameraNumber].GetPosition()[0], 1.f, -20, 20.f);
+
 
 	ImGui::End();
 
