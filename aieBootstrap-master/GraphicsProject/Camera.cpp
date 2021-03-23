@@ -9,6 +9,13 @@ Camera::Camera()
 	m_theta = 0;
 }
 
+Camera::Camera(glm::vec3 a_position)
+{
+	m_position = a_position;
+	m_phi = 0;
+	m_theta = 0;
+}
+
 void Camera::Update(float deltaTime)
 {
 	aie::Input* input = aie::Input::getInstance();
@@ -68,7 +75,6 @@ void Camera::Update(float deltaTime)
 	m_lastMouseX = mx;
 	m_lastMouseY = my;
 
-
 }
 
 glm::mat4 Camera::GetViewMatrix()
@@ -77,8 +83,6 @@ glm::mat4 Camera::GetViewMatrix()
 	float phiR = glm::radians(m_phi);
 
 	glm::vec3 forward(glm::cos(phiR) * glm::cos(thetaR), glm::sin(phiR), glm::cos(phiR) * glm::sin(thetaR));
-
-
 
 	return glm::lookAt(m_position, m_position + forward, glm::vec3(0,1,0));
 }

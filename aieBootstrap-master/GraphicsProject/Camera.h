@@ -5,6 +5,7 @@ class Camera
 {
 public:
 	Camera();
+	Camera(glm::vec3 a_position);
 	~Camera() {};
 
 	void Update(float deltaTime);

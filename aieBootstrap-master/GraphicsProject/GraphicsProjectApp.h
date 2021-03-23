@@ -22,12 +22,13 @@ public:
 	virtual void draw();
 protected:
 
-	Camera* m_camera;
-	Camera* m_camera1 = new Camera();
-	Camera* camera2 = new Camera();
+	Camera* m_mainCamera = new Camera();
+	Camera* m_camera2 = new Camera();
+	Camera* m_camera3 = new Camera();
+
+
 
 	std::vector<Camera*> m_cameraArray;
-	int m_cameraNumber = 0;
 
 	// camera transforms
 	glm::mat4	m_viewMatrix;
@@ -86,7 +87,10 @@ public:
 	void Inputs();
 	bool LoadShaderAndMeshLogic(Light a_light);
 	//void DrawShaderAndMeshes(glm::mat4, glm::mat4);
+	//int GetCameraNumber() { return m_cameraNumber; }
 	void IMGUI_Logic();
+	int m_cameraNumber = 0;
+
 
 
 };

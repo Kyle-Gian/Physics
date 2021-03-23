@@ -34,10 +34,10 @@ bool GraphicsProjectApp::startup() {
 	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
-	m_cameraArray.push_back(m_camera);
+	m_cameraArray.push_back(m_mainCamera);
 
-	m_cameraArray.push_back(m_camera1);
 	m_cameraArray.push_back(m_camera2);
+	m_cameraArray.push_back(m_camera3);
 
 
 
@@ -80,7 +80,20 @@ void GraphicsProjectApp::update(float deltaTime) {
 	Gizmos::addTransform(mat4(1));
 
 
-	m_camera.Update(deltaTime);
+	m_cameraArray[m_cameraNumber]->Update(deltaTime);
+
+	//Rotate the main light if not list is not empty
+	if (m_scene->GetPointLights().capacity() != NULL)
+	{
+
+		//Draw colored sphere at Light position
+		for (size_t i = 0; i < m_scene->GetPointLights().size(); i++)
+		{
+			m_scene->GetPointLightPositions()[2] = glm::normalize(glm::vec3(glm::cos(getTime() * 2), glm::sin(getTime() * 2), 0));
+
+			Gizmos::addSphere(m_scene->GetPointLightPositions()[i], 0.5f, 10, 10, glm::vec4(m_scene->GetPointLights()[i].m_color, 1));
+		}
+	}
 
 	Inputs();
 
@@ -98,8 +111,8 @@ void GraphicsProjectApp::draw() {
 	// wipe the screen to the background colour
 	clearScreen();
 
-	glm::mat4 projectionMatrix = m_camera.GetProjectionMatrix(getWindowWidth(), (float)getWindowHeight());
-	glm::mat4 viewMatrix = m_camera.GetViewMatrix();
+	glm::mat4 projectionMatrix = m_cameraArray[m_cameraNumber]->GetProjectionMatrix(getWindowWidth(), (float)getWindowHeight());
+	glm::mat4 viewMatrix = m_cameraArray[m_cameraNumber]->GetViewMatrix();
 
 	m_scene->Draw();
 
@@ -228,7 +241,8 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 
 #pragma endregion
-	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f));
+
+	m_scene = new Scene(m_cameraArray, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f));
 
 	m_scene->AddInstances(new Instance("Spear", glm::vec3(1, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1), &m_spearMesh, &m_normalMapShader));
 
@@ -239,6 +253,8 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 	m_scene->GetPointLights().push_back(Light(vec3(5, 3, 0), vec3(0, 1, 0), 10));
 	m_scene->GetPointLights().push_back(Light(vec3(-5, 3, 0), vec3(1, 0, 0), 10));
+	m_scene->GetPointLights().push_back(Light(vec3(0, 5, 0), vec3(1, 1, 1), 20));
+
 
 	return true;
 }
@@ -279,7 +295,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 
 	ImGui::Begin("Camera's ");
 
-	ImGui::DragFloat3("Camera " + m_cameraNumber, &m_cameraArray[m_cameraNumber].GetPosition()[0], 1.f, -20, 20.f);
+	ImGui::DragFloat3("Camera " + m_cameraNumber, &m_cameraArray[m_cameraNumber]->GetPosition()[0], 1.f, -20, 20.f);
 
 
 	ImGui::End();
