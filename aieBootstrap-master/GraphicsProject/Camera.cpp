@@ -9,11 +9,12 @@ Camera::Camera()
 	m_theta = 0;
 }
 
-Camera::Camera(glm::vec3 a_position)
+Camera::Camera(glm::vec3 a_position, float a_xRotation, float a_yRotation, bool a_stationary)
 {
 	m_position = a_position;
-	m_phi = 0;
-	m_theta = 0;
+	m_phi = a_xRotation;
+	m_theta = a_yRotation;
+	m_stationary = a_stationary;
 }
 
 void Camera::Update(float deltaTime)

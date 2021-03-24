@@ -90,7 +90,4 @@ public:
 	//int GetCameraNumber() { return m_cameraNumber; }
 	void IMGUI_Logic();
 	int m_cameraNumber = 0;
-
-
-
 };

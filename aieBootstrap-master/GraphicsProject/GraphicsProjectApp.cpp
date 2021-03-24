@@ -40,7 +40,6 @@ bool GraphicsProjectApp::startup() {
 	m_cameraArray.push_back(m_camera3);
 
 
-
 	Light light = Light(vec3(1, 1, 1), vec3(1, 1, 1), 1.f);
 
 
@@ -81,6 +80,8 @@ void GraphicsProjectApp::update(float deltaTime) {
 
 
 	m_cameraArray[m_cameraNumber]->Update(deltaTime);
+	m_scene->GetLight().m_direction = glm::normalize(glm::vec3(glm::cos(getTime() * 2), glm::sin(getTime() * 2), 0));
+	Gizmos::addSphere(m_scene->GetLight().m_direction, 0.5f, 10, 10, glm::vec4(m_scene->GetLight().m_color, 1));
 
 	//Rotate the main light if not list is not empty
 	if (m_scene->GetPointLights().capacity() != NULL)
@@ -89,13 +90,13 @@ void GraphicsProjectApp::update(float deltaTime) {
 		//Draw colored sphere at Light position
 		for (size_t i = 0; i < m_scene->GetPointLights().size(); i++)
 		{
-			m_scene->GetPointLightPositions()[2] = glm::normalize(glm::vec3(glm::cos(getTime() * 2), glm::sin(getTime() * 2), 0));
-
+			//m_scene->GetPointLightPositions()[2] = glm::normalize(glm::vec3(glm::cos(getTime() * 2), glm::sin(getTime() * 2), 0));
 			Gizmos::addSphere(m_scene->GetPointLightPositions()[i], 0.5f, 10, 10, glm::vec4(m_scene->GetPointLights()[i].m_color, 1));
 		}
 	}
 
 	Inputs();
+	m_scene->m_currentCam = m_cameraNumber;
 
 	IMGUI_Logic();
 
@@ -278,7 +279,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 	//Change the position, rotation and scale of the objects with the GUI
 	if (m_scene->GetInstances().size() != NULL)
 	{
-		ImGui::Begin("Position For Objects");
+		ImGui::Begin("Position For Objects - To Change Object use Up & Down Arrow");
 		ImGui::DragFloat3(m_scene->GetInstances()[m_objectPos]->GetString(), &m_scene->GetInstances()[m_objectPos]->m_position[0], 0.5f, -20, 20.f);
 		ImGui::End();
 
@@ -293,7 +294,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 		m_scene->GetInstances()[m_objectPos]->UpdateTransform();  
 	}
 
-	ImGui::Begin("Camera's ");
+	ImGui::Begin("Camera's Input Q & E ");
 
 	ImGui::DragFloat3("Camera " + m_cameraNumber, &m_cameraArray[m_cameraNumber]->GetPosition()[0], 1.f, -20, 20.f);
 

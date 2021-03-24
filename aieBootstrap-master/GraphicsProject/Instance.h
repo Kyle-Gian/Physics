@@ -32,5 +32,6 @@ protected:
 	aie::ShaderProgram* m_shader;
 	char* m_name;
 
+
 };
 

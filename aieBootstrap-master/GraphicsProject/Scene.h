@@ -33,7 +33,9 @@ public:
 	void AddInstances(Instance* a_instances);
 	void Draw();
 
-	std::vector<Camera*> GetCameras() { return m_cameras; }
+	int m_currentCam = 0;
+
+	Camera* GetCamera() { return m_cameras[m_currentCam]; }
 	glm::vec2 GetWindowSize() { return m_windowSize; }
 	Light& GetLight() { return m_light; }
 	glm::vec3 GetAmbientLight() { return m_ambientLight; }

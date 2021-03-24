@@ -25,13 +25,12 @@ Instance::Instance(char* a_name ,glm::vec3 a_position, glm::vec3 a_eulerAngles, 
 
 void Instance::Draw(Scene* a_scene)
 {
-	GraphicsProjectApp graphics;
 	m_shader->bind();
 
-	auto pvm = a_scene->GetCameras()[graphics.m_cameraNumber]->GetProjectionMatrix(a_scene->GetWindowSize().x, a_scene->GetWindowSize().y) * a_scene->GetCameras()[graphics.m_cameraNumber]->GetViewMatrix()* m_transform;
+	auto pvm = a_scene->GetCamera()->GetProjectionMatrix(a_scene->GetWindowSize().x, a_scene->GetWindowSize().y) * a_scene->GetCamera()->GetViewMatrix()* m_transform;
 	//Bind the PVM
 	m_shader->bindUniform("ProjectionViewModel", pvm);
-	m_shader->bindUniform("CameraPosition", a_scene->GetCameras()[graphics.m_cameraNumber]->GetPosition());
+	m_shader->bindUniform("CameraPosition", a_scene->GetCamera()->GetPosition());
 	m_shader->bindUniform("AmbientColor", a_scene->GetAmbientLight());
 	m_shader->bindUniform("LightColor",a_scene->GetLight().m_color);
 	m_shader->bindUniform("LightDirection", a_scene->GetLight().m_direction);
