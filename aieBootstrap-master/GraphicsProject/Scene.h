@@ -27,7 +27,7 @@ struct Light
 class Scene
 {
 public:
-	Scene(std::vector<Camera*> a_camera, glm::vec2 a_windowSize, Light& a_light, glm::vec3 a_ambientLight);
+	Scene( glm::vec2 a_windowSize, Light& a_light, glm::vec3 a_ambientLight);
 	~Scene();
 
 	void AddInstances(Instance* a_instances);
@@ -47,9 +47,8 @@ public:
 	std::vector<Light>& GetPointLights() { return m_pointLights; }
 	std::vector<Instance*> GetInstances() { return m_instances; }
 
-
-protected:
 	std::vector<Camera*> m_cameras;
+protected:
 	glm::vec2 m_windowSize;
 	Light m_light;
 	Light m_sunLight;

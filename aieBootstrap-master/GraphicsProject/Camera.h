@@ -11,6 +11,8 @@ public:
 	void Update(float deltaTime);
 
 	glm::vec3 GetPosition() { return m_position; }
+	bool IsStationary() { return m_stationary; }
+
 
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjectionMatrix(float a_width, float a_height);

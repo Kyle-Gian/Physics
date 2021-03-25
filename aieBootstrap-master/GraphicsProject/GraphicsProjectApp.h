@@ -22,13 +22,11 @@ public:
 	virtual void draw();
 protected:
 
-	Camera* m_mainCamera = new Camera();
-	Camera* m_camera2 = new Camera();
-	Camera* m_camera3 = new Camera();
+	Camera* m_mainCamera = new Camera(glm::vec3(-18,4,0), 0, 0, false);
+	Camera* m_camera2 = new Camera(glm::vec3(0, 2, 20) , 0, -90, true);
+	Camera* m_camera3 = new Camera(glm::vec3(0, 2, -20), 0, 90, true);
+	Camera* m_camera4 = new Camera(glm::vec3(20, 2, 0), 0, 180, true);
 
-
-
-	std::vector<Camera*> m_cameraArray;
 
 	// camera transforms
 	glm::mat4	m_viewMatrix;

@@ -34,14 +34,15 @@ bool GraphicsProjectApp::startup() {
 	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
-	m_cameraArray.push_back(m_mainCamera);
-
-	m_cameraArray.push_back(m_camera2);
-	m_cameraArray.push_back(m_camera3);
-
-
 	Light light = Light(vec3(1, 1, 1), vec3(1, 1, 1), 1.f);
 
+	m_scene = new Scene(glm::vec2(getWindowWidth(), getWindowHeight()), light, glm::vec3(0.25f));
+
+	m_scene->m_cameras.push_back(m_mainCamera);
+
+	m_scene->m_cameras.push_back(m_camera2);
+	m_scene->m_cameras.push_back(m_camera3);
+	m_scene->m_cameras.push_back(m_camera4);
 
 	return LoadShaderAndMeshLogic(light);
 }
@@ -51,9 +52,9 @@ void GraphicsProjectApp::shutdown() {
 	Gizmos::destroy();
 	delete m_scene;
 
-	for (size_t i = 0; i < m_cameraArray.size(); i++)
+	for (size_t i = 0; i < m_scene->m_cameras.size(); i++)
 	{
-		delete m_cameraArray[i];
+		delete m_scene->m_cameras[i];
 	}
 
 }
@@ -78,8 +79,10 @@ void GraphicsProjectApp::update(float deltaTime) {
 	// add a transform so that we can see the axis
 	Gizmos::addTransform(mat4(1));
 
-
-	m_cameraArray[m_cameraNumber]->Update(deltaTime);
+	if (!m_scene->m_cameras[m_cameraNumber]->IsStationary())
+	{
+		m_scene->m_cameras[m_cameraNumber]->Update(deltaTime);
+	}
 	m_scene->GetLight().m_direction = glm::normalize(glm::vec3(glm::cos(getTime() * 2), glm::sin(getTime() * 2), 0));
 	Gizmos::addSphere(m_scene->GetLight().m_direction, 0.5f, 10, 10, glm::vec4(m_scene->GetLight().m_color, 1));
 
@@ -112,8 +115,8 @@ void GraphicsProjectApp::draw() {
 	// wipe the screen to the background colour
 	clearScreen();
 
-	glm::mat4 projectionMatrix = m_cameraArray[m_cameraNumber]->GetProjectionMatrix(getWindowWidth(), (float)getWindowHeight());
-	glm::mat4 viewMatrix = m_cameraArray[m_cameraNumber]->GetViewMatrix();
+	glm::mat4 projectionMatrix = m_scene->m_cameras[m_cameraNumber]->GetProjectionMatrix(getWindowWidth(), (float)getWindowHeight());
+	glm::mat4 viewMatrix = m_scene->m_cameras[m_cameraNumber]->GetViewMatrix();
 
 	m_scene->Draw();
 
@@ -128,7 +131,7 @@ void GraphicsProjectApp::Inputs()
 	int instancesSize = 0;
 	int cameraSize = 0;
 	instancesSize = m_scene->GetInstances().size();
-	cameraSize = m_cameraArray.size();
+	cameraSize = m_scene->m_cameras.size();
 
 	//If the UP key has been pressed and the number isn't greater then the vector size increase the vector position
 
@@ -243,7 +246,6 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 #pragma endregion
 
-	m_scene = new Scene(m_cameraArray, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f));
 
 	m_scene->AddInstances(new Instance("Spear", glm::vec3(1, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1), &m_spearMesh, &m_normalMapShader));
 
@@ -296,7 +298,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 
 	ImGui::Begin("Camera's Input Q & E ");
 
-	ImGui::DragFloat3("Camera " + m_cameraNumber, &m_cameraArray[m_cameraNumber]->GetPosition()[0], 1.f, -20, 20.f);
+	ImGui::DragFloat3("Camera " + m_cameraNumber, &m_scene->m_cameras[m_cameraNumber]->GetPosition()[0], 1.f, -20, 20.f);
 
 
 	ImGui::End();
