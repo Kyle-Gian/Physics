@@ -120,8 +120,10 @@ void GraphicsProjectApp::draw() {
 
 	m_scene->Draw();
 
-	Gizmos::draw(projectionMatrix * viewMatrix);
+	
 
+	Gizmos::draw(projectionMatrix * viewMatrix);
+	PostProcessing();
 }
 
 void GraphicsProjectApp::Inputs()
@@ -178,6 +180,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 {
 #pragma region LoadShadersFromFile
 
+
 #pragma region PhongShader
 
 	//Load the Vertex script
@@ -194,6 +197,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 
 #pragma endregion
+
 
 #pragma region NormalMapShader
 	m_normalMapShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/normalMap.vert");
@@ -243,6 +247,28 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 #pragma endregion
 
+	if (m_renderTarget.initialise(1, getWindowWidth(), getWindowHeight()) == false)
+	{
+		printf("Render Target Error!\n");
+		return false;
+	}
+
+	m_fullScreenQuad.InitialiseFullscreenQuad();
+
+#pragma region Post Processing
+	m_postShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/post.vert");
+	m_postShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/post.frag");
+
+	if (!m_postShader.link())
+	{
+		printf("Post Processing Shader had an error: %s\n", m_postShader.getLastError());
+		return false;
+
+	}
+#pragma endregion
+
+
+
 
 #pragma endregion
 
@@ -253,6 +279,8 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 	m_scene->AddInstances(new Instance("Bunny", glm::vec3(0, 0, -2), glm::vec3(0, 0, 0), glm::vec3(0.5f), &m_bunnyMesh, &m_phongShader));
 
+	m_scene->AddInstances(new Instance("Post Process", glm::vec3(0, 0, -2), glm::vec3(0, 0, 0), glm::vec3(0.5f), &m_bunnyMesh, &m_phongShader));
+
 
 	m_scene->GetPointLights().push_back(Light(vec3(5, 3, 0), vec3(0, 1, 0), 10));
 	m_scene->GetPointLights().push_back(Light(vec3(-5, 3, 0), vec3(1, 0, 0), 10));
@@ -262,6 +290,22 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 	return true;
 }
 
+void GraphicsProjectApp::PostProcessing()
+{
+	// unbind target to return to backbuffer
+	m_renderTarget.unbind();
+
+	// clear the backbuffer
+	clearScreen();
+
+	// bindpost shader and textures
+	m_postShader.bind();
+	m_postShader.bindUniform("colourTarget", 0);
+	m_renderTarget.getTarget(0).bind(0);
+	// draw fullscreen quad
+	m_fullScreenQuad.Draw();
+}
+
 void GraphicsProjectApp::IMGUI_Logic()
 {
 
@@ -269,10 +313,6 @@ void GraphicsProjectApp::IMGUI_Logic()
 
 	ImGui::DragFloat3("Sunlight Direction 1", &m_scene->GetLight().m_direction[0], 0.1f, -10.f, 10.f);
 	ImGui::DragFloat3("Sunlight Color 1", &m_scene->GetLight().m_color[0], 0.1f, 0.f, 2.f);
-
-	//ImGui::DragFloat3("Sunlight Direction 2", &m_light1->direction[0], 0.1f, -10.f, 10.f);
-
-	//ImGui::DragFloat3("Sunlight Color 2", &m_light1->color[0], 0.1f, 0.f, 2.f);
 
 	ImGui::End();
 

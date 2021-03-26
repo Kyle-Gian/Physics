@@ -8,6 +8,7 @@
 #include "OBJMesh.h"
 #include <vector>
 #include"Scene.h"
+#include "RenderTarget.h"
 
 class GraphicsProjectApp : public aie::Application {
 public:
@@ -22,6 +23,7 @@ public:
 	virtual void draw();
 protected:
 
+	//Create the Cameras for the project
 	Camera* m_mainCamera = new Camera(glm::vec3(-18,4,0), 0, 0, false);
 	Camera* m_camera2 = new Camera(glm::vec3(0, 2, 20) , 0, -90, true);
 	Camera* m_camera3 = new Camera(glm::vec3(0, 2, -20), 0, 90, true);
@@ -40,11 +42,13 @@ protected:
 	aie::ShaderProgram m_phongShader;
 	aie::ShaderProgram m_textureShader;
 	aie::ShaderProgram m_normalMapShader;
-	aie::ShaderProgram m_newMapShader;
+	aie::ShaderProgram m_postShader;
 
 
-	//Basic Plane
-	Mesh m_quadMesh;
+	//Basic Plane	
+	Mesh m_fullScreenQuad;
+	aie::RenderTarget m_renderTarget;
+	
 	glm::mat4 m_quadTransform;
 
 	//Create a bunny with a flat color
@@ -84,6 +88,7 @@ protected:
 public:
 	void Inputs();
 	bool LoadShaderAndMeshLogic(Light a_light);
+	void PostProcessing();
 	//void DrawShaderAndMeshes(glm::mat4, glm::mat4);
 	//int GetCameraNumber() { return m_cameraNumber; }
 	void IMGUI_Logic();
