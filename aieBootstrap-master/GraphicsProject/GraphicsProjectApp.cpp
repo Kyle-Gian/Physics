@@ -111,19 +111,20 @@ void GraphicsProjectApp::update(float deltaTime) {
 }
 
 void GraphicsProjectApp::draw() {
-
+	m_renderTarget.bind();
 	// wipe the screen to the background colour
 	clearScreen();
 
 	glm::mat4 projectionMatrix = m_scene->m_cameras[m_cameraNumber]->GetProjectionMatrix(getWindowWidth(), (float)getWindowHeight());
 	glm::mat4 viewMatrix = m_scene->m_cameras[m_cameraNumber]->GetViewMatrix();
 
+
 	m_scene->Draw();
 
-	
-
 	Gizmos::draw(projectionMatrix * viewMatrix);
+
 	PostProcessing();
+
 }
 
 void GraphicsProjectApp::Inputs()
@@ -247,6 +248,24 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 #pragma endregion
 
+
+
+#pragma endregion
+
+
+	m_scene->AddInstances(new Instance("Spear", glm::vec3(1, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1), &m_spearMesh, &m_normalMapShader));
+
+	m_scene->AddInstances(new Instance("Colt", glm::vec3(-2, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0.01f), &m_coltMesh, &m_normalMapShader));
+
+	m_scene->AddInstances(new Instance("Bunny", glm::vec3(0, 0, -2), glm::vec3(0, 0, 0), glm::vec3(0.5f), &m_bunnyMesh, &m_phongShader));
+
+	//m_scene->AddInstances(new Instance("Post Process", glm::vec3(0, 0, -2), glm::vec3(0, 0, 0), glm::vec3(0.5f), &m_bunnyMesh, &m_phongShader));
+
+
+	m_scene->GetPointLights().push_back(Light(vec3(5, 3, 0), vec3(0, 1, 0), 10));
+	m_scene->GetPointLights().push_back(Light(vec3(-5, 3, 0), vec3(1, 0, 0), 10));
+	m_scene->GetPointLights().push_back(Light(vec3(0, 5, 0), vec3(1, 1, 1), 20));
+
 	if (m_renderTarget.initialise(1, getWindowWidth(), getWindowHeight()) == false)
 	{
 		printf("Render Target Error!\n");
@@ -267,26 +286,6 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 	}
 #pragma endregion
 
-
-
-
-#pragma endregion
-
-
-	m_scene->AddInstances(new Instance("Spear", glm::vec3(1, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1), &m_spearMesh, &m_normalMapShader));
-
-	m_scene->AddInstances(new Instance("Colt", glm::vec3(-2, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0.01f), &m_coltMesh, &m_normalMapShader));
-
-	m_scene->AddInstances(new Instance("Bunny", glm::vec3(0, 0, -2), glm::vec3(0, 0, 0), glm::vec3(0.5f), &m_bunnyMesh, &m_phongShader));
-
-	m_scene->AddInstances(new Instance("Post Process", glm::vec3(0, 0, -2), glm::vec3(0, 0, 0), glm::vec3(0.5f), &m_bunnyMesh, &m_phongShader));
-
-
-	m_scene->GetPointLights().push_back(Light(vec3(5, 3, 0), vec3(0, 1, 0), 10));
-	m_scene->GetPointLights().push_back(Light(vec3(-5, 3, 0), vec3(1, 0, 0), 10));
-	m_scene->GetPointLights().push_back(Light(vec3(0, 5, 0), vec3(1, 1, 1), 20));
-
-
 	return true;
 }
 
@@ -302,6 +301,7 @@ void GraphicsProjectApp::PostProcessing()
 	m_postShader.bind();
 	m_postShader.bindUniform("colourTarget", 0);
 	m_renderTarget.getTarget(0).bind(0);
+
 	// draw fullscreen quad
 	m_fullScreenQuad.Draw();
 }

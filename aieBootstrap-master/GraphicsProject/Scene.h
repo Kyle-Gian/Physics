@@ -2,6 +2,7 @@
 #include <list>
 #include <vector>
 #include <glm/glm.hpp>
+#include "Mesh.h"
 
 class Camera;
 class Instance;
@@ -29,7 +30,6 @@ class Scene
 public:
 	Scene( glm::vec2 a_windowSize, Light& a_light, glm::vec3 a_ambientLight);
 	~Scene();
-
 	void AddInstances(Instance* a_instances);
 	void Draw();
 
