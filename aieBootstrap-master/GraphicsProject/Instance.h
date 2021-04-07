@@ -1,3 +1,10 @@
+//Author Kyle Gian
+//Date Created 20/3/2021
+//Last Modified 20/3/2021
+
+// Instances take in given data of a mesh or obj file
+
+
 #pragma once
 #include <glm/glm.hpp>
 

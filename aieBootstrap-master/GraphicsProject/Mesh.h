@@ -1,3 +1,10 @@
+//Author Kyle Gian
+//Date Created 10/3/2021
+//Last Modified 10/3/2021
+
+//Creates a mesh based off given data and uses tri's to creat the mesh 
+
+
 #pragma once
 #include <glm/glm.hpp>
 class Mesh

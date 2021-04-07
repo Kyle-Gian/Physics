@@ -1,3 +1,9 @@
+//Author Kyle Gian
+//Date Created 2/4/2021
+//Last Modified 6/4/2021
+
+//Creates a camera instance based off information given for position, rotation and if it is stationary
+
 #pragma once
 #include <glm/glm.hpp>
 

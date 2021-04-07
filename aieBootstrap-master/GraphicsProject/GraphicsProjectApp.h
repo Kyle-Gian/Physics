@@ -1,3 +1,10 @@
+//Author Kyle Gian
+//Date Created 2/4/2021
+//Last Modified 6/4/2021
+
+
+//Runs the project, Loads Meshes and shaders from given files. Also holds the GUI information
+
 #pragma once
 
 #include "Application.h"

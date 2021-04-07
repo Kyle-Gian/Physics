@@ -1,3 +1,9 @@
+//Author Kyle Gian
+//Date Created 20/3/2021
+//Last Modified 22/3/2021
+
+// Keeps track of all instances which includes lights, cameras and objects
+
 #pragma once
 #include <list>
 #include <vector>
